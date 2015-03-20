@@ -1,2 +1,9 @@
-# Projeto-Iris---Fanex
-Um sistema desktop em rede para alunos da escola profissionalizante Fanex usarem a fim de enviarem atividades a seus instrutores, recebê-las corrigidas, visualizar as feitas, pedir ajuda a eles e mais. Os instrutores teríam acesso a todas as informações dos alunos e inclusive poderia gerar relatórios.
+# Projeto Iris Fanex
+<h3>(Licença: <a href="LICENSE">MIT License</a>)</h3>
+
+Projeto Iris: um sistema que organize as provas e atividades dos alunos da empresa onde fiz estágio.
+O objetivo de existência dele é o de servir ao propósito da descrição do repositório. A intenção de desenvolvimento foi a de aplicar meus conhecimentos aprendidos com Hibernate e JPA para resolver um problema dos usuários da empresa.
+
+Na Mitologia Grega, segundo a Wikipédia, Íris é "a personificação do arco-íris (...). Como o 
+arco-íris, para unir a Terra e o céu, Íris é a mensageira dos deuses para os seres humanos". 
+Analogamente, este sistema tem como objetivo comunicar os alunos aos seus instrutores!
