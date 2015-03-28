@@ -5,6 +5,7 @@
     <class>br.com.fanex.mazuh.edu.Curso</class>
     <class>br.com.fanex.mazuh.edu.Exercicio</class>
     <class>br.com.fanex.mazuh.acesso.Usuario</class>
+    <class>br.com.fanex.mazuh.acesso.Hierarquia</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/db_iris"/>
       <property name="javax.persistence.jdbc.password" value="echoecho"/>

@@ -1,5 +1,12 @@
-﻿CREATE TABLE usuarios(
+﻿CREATE TABLE hierarquias(
 	id SERIAL PRIMARY KEY,
+	nome VARCHAR(10)
+);
+
+CREATE TABLE usuarios(
+	id SERIAL PRIMARY KEY,
+	id_categoria INTEGER
+		REFERENCES hierarquias(id),
 	nome VARCHAR(50) NOT NULL,
 	senha VARCHAR(20) NOT NULL
 );

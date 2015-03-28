@@ -23,8 +23,6 @@
  */
 package br.com.fanex.mazuh.acesso;
 
-import br.com.fanex.mazuh.acesso.Hierarquia;
-import br.com.fanex.mazuh.edu.Exercicio;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -33,8 +31,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -47,45 +43,29 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author mazuh
  */
 @Entity
-@Table(name = "usuarios", catalog = "db_iris", schema = "public")
+@Table(name = "hierarquias", catalog = "db_iris", schema = "public")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u"),
-    @NamedQuery(name = "Usuario.findById", query = "SELECT u FROM Usuario u WHERE u.id = :id"),
-    @NamedQuery(name = "Usuario.findByNome", query = "SELECT u FROM Usuario u WHERE u.nome = :nome"),
-    @NamedQuery(name = "Usuario.findBySenha", query = "SELECT u FROM Usuario u WHERE u.senha = :senha")})
-public class Usuario implements Serializable {
+    @NamedQuery(name = "Hierarquia.findAll", query = "SELECT h FROM Hierarquia h"),
+    @NamedQuery(name = "Hierarquia.findById", query = "SELECT h FROM Hierarquia h WHERE h.id = :id"),
+    @NamedQuery(name = "Hierarquia.findByNome", query = "SELECT h FROM Hierarquia h WHERE h.nome = :nome")})
+public class Hierarquia implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
     @Column(name = "nome")
     private String nome;
-    @Basic(optional = false)
-    @Column(name = "senha")
-    private String senha;
-    @OneToMany(mappedBy = "idInstrutor")
-    private List<Exercicio> exercicioList;
-    @OneToMany(mappedBy = "idAluno")
-    private List<Exercicio> exercicioList1;
-    @JoinColumn(name = "id_categoria", referencedColumnName = "id")
-    @ManyToOne
-    private Hierarquia idCategoria;
+    @OneToMany(mappedBy = "idCategoria")
+    private List<Usuario> usuarioList;
 
-    public Usuario() {
+    public Hierarquia() {
     }
 
-    public Usuario(Integer id) {
+    public Hierarquia(Integer id) {
         this.id = id;
-    }
-
-    public Usuario(Integer id, String nome, String senha) {
-        this.id = id;
-        this.nome = nome;
-        this.senha = senha;
     }
 
     public Integer getId() {
@@ -104,38 +84,13 @@ public class Usuario implements Serializable {
         this.nome = nome;
     }
 
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
     @XmlTransient
-    public List<Exercicio> getExercicioList() {
-        return exercicioList;
+    public List<Usuario> getUsuarioList() {
+        return usuarioList;
     }
 
-    public void setExercicioList(List<Exercicio> exercicioList) {
-        this.exercicioList = exercicioList;
-    }
-
-    @XmlTransient
-    public List<Exercicio> getExercicioList1() {
-        return exercicioList1;
-    }
-
-    public void setExercicioList1(List<Exercicio> exercicioList1) {
-        this.exercicioList1 = exercicioList1;
-    }
-
-    public Hierarquia getIdCategoria() {
-        return idCategoria;
-    }
-
-    public void setIdCategoria(Hierarquia idCategoria) {
-        this.idCategoria = idCategoria;
+    public void setUsuarioList(List<Usuario> usuarioList) {
+        this.usuarioList = usuarioList;
     }
 
     @Override
@@ -148,10 +103,10 @@ public class Usuario implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Usuario)) {
+        if (!(object instanceof Hierarquia)) {
             return false;
         }
-        Usuario other = (Usuario) object;
+        Hierarquia other = (Hierarquia) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -160,7 +115,7 @@ public class Usuario implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.fanex.mazuh.Usuario[ id=" + id + " ]";
+        return "br.com.fanex.mazuh.Hierarquia[ id=" + id + " ]";
     }
     
 }

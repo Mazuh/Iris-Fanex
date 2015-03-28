@@ -27,10 +27,12 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -40,9 +42,16 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author mazuh
  */
-@MappedSuperclass
-@Table(name = "cursos")
+@Entity
+@Table(name = "cursos", catalog = "db_iris", schema = "public")
 @XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Curso.findAll", query = "SELECT c FROM Curso c"),
+    @NamedQuery(name = "Curso.findById", query = "SELECT c FROM Curso c WHERE c.id = :id"),
+    @NamedQuery(name = "Curso.findByNome", query = "SELECT c FROM Curso c WHERE c.nome = :nome"),
+    @NamedQuery(name = "Curso.findByQtdExercicios", query = "SELECT c FROM Curso c WHERE c.qtdExercicios = :qtdExercicios"),
+    @NamedQuery(name = "Curso.findByUrlGabarito", query = "SELECT c FROM Curso c WHERE c.urlGabarito = :urlGabarito"),
+    @NamedQuery(name = "Curso.findByUrlGabaritoAlt", query = "SELECT c FROM Curso c WHERE c.urlGabaritoAlt = :urlGabaritoAlt")})
 public class Curso implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -59,7 +68,7 @@ public class Curso implements Serializable {
     @Column(name = "url_gabarito_alt")
     private String urlGabaritoAlt;
     @OneToMany(mappedBy = "idCurso")
-    private List<Exercicio> exerciciosList;
+    private List<Exercicio> exercicioList;
 
     public Curso() {
     }
@@ -109,12 +118,12 @@ public class Curso implements Serializable {
     }
 
     @XmlTransient
-    public List<Exercicio> getExerciciosList() {
-        return exerciciosList;
+    public List<Exercicio> getExercicioList() {
+        return exercicioList;
     }
 
-    public void setExerciciosList(List<Exercicio> exerciciosList) {
-        this.exerciciosList = exerciciosList;
+    public void setExercicioList(List<Exercicio> exercicioList) {
+        this.exercicioList = exercicioList;
     }
 
     @Override
@@ -139,7 +148,7 @@ public class Curso implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.fanex.mazuh.Cursos[ id=" + id + " ]";
+        return "br.com.fanex.mazuh.Curso[ id=" + id + " ]";
     }
     
 }

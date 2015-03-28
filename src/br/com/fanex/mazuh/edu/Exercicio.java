@@ -28,12 +28,14 @@ import br.com.fanex.mazuh.edu.Curso;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -41,9 +43,18 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author mazuh
  */
-@MappedSuperclass
-@Table(name = "exercicios")
+@Entity
+@Table(name = "exercicios", catalog = "db_iris", schema = "public")
 @XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Exercicio.findAll", query = "SELECT e FROM Exercicio e"),
+    @NamedQuery(name = "Exercicio.findById", query = "SELECT e FROM Exercicio e WHERE e.id = :id"),
+    @NamedQuery(name = "Exercicio.findByNumAula", query = "SELECT e FROM Exercicio e WHERE e.numAula = :numAula"),
+    @NamedQuery(name = "Exercicio.findByQtdPerguntas", query = "SELECT e FROM Exercicio e WHERE e.qtdPerguntas = :qtdPerguntas"),
+    @NamedQuery(name = "Exercicio.findByRespostas", query = "SELECT e FROM Exercicio e WHERE e.respostas = :respostas"),
+    @NamedQuery(name = "Exercicio.findByDtEnvio", query = "SELECT e FROM Exercicio e WHERE e.dtEnvio = :dtEnvio"),
+    @NamedQuery(name = "Exercicio.findByCorrecao", query = "SELECT e FROM Exercicio e WHERE e.correcao = :correcao"),
+    @NamedQuery(name = "Exercicio.findByIsCorrigido", query = "SELECT e FROM Exercicio e WHERE e.isCorrigido = :isCorrigido")})
 public class Exercicio implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -182,7 +193,7 @@ public class Exercicio implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.fanex.mazuh.Exercicios[ id=" + id + " ]";
+        return "br.com.fanex.mazuh.Exercicio[ id=" + id + " ]";
     }
     
 }
