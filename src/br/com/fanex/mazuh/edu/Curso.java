@@ -23,33 +23,57 @@
  */
 package br.com.fanex.mazuh.edu;
 
+import java.io.Serializable;
+import java.util.List;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  *
  * @author mazuh
  */
-public class Curso {
-    
-    // ATRIBUTOS /////////////////////////////////////////
-     
-    private int codigo, qtdExercicios;
-    private String nome, url_gabarito, url_gabarito_alt;
+@MappedSuperclass
+@Table(name = "cursos")
+@XmlRootElement
+public class Curso implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
+    @Column(name = "nome")
+    private String nome;
+    @Column(name = "qtd_exercicios")
+    private Integer qtdExercicios;
+    @Column(name = "url_gabarito")
+    private String urlGabarito;
+    @Column(name = "url_gabarito_alt")
+    private String urlGabaritoAlt;
+    @OneToMany(mappedBy = "idCurso")
+    private List<Exercicio> exerciciosList;
 
-    // GETTERS E SETTERS /////////////////////////////////////////
-     
-    public int getCodigo() {
-        return codigo;
+    public Curso() {
     }
 
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
+    public Curso(Integer id) {
+        this.id = id;
     }
 
-    public int getQtdExercicios() {
-        return qtdExercicios;
+    public Integer getId() {
+        return id;
     }
 
-    public void setQtdExercicios(int qtdExercicios) {
-        this.qtdExercicios = qtdExercicios;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -60,20 +84,62 @@ public class Curso {
         this.nome = nome;
     }
 
-    public String getUrl_gabarito() {
-        return url_gabarito;
+    public Integer getQtdExercicios() {
+        return qtdExercicios;
     }
 
-    public void setUrl_gabarito(String url_gabarito) {
-        this.url_gabarito = url_gabarito;
+    public void setQtdExercicios(Integer qtdExercicios) {
+        this.qtdExercicios = qtdExercicios;
     }
 
-    public String getUrl_gabarito_alt() {
-        return url_gabarito_alt;
+    public String getUrlGabarito() {
+        return urlGabarito;
     }
 
-    public void setUrl_gabarito_alt(String url_gabarito_alt) {
-        this.url_gabarito_alt = url_gabarito_alt;
+    public void setUrlGabarito(String urlGabarito) {
+        this.urlGabarito = urlGabarito;
+    }
+
+    public String getUrlGabaritoAlt() {
+        return urlGabaritoAlt;
+    }
+
+    public void setUrlGabaritoAlt(String urlGabaritoAlt) {
+        this.urlGabaritoAlt = urlGabaritoAlt;
+    }
+
+    @XmlTransient
+    public List<Exercicio> getExerciciosList() {
+        return exerciciosList;
+    }
+
+    public void setExerciciosList(List<Exercicio> exerciciosList) {
+        this.exerciciosList = exerciciosList;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Curso)) {
+            return false;
+        }
+        Curso other = (Curso) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "br.com.fanex.mazuh.Cursos[ id=" + id + " ]";
     }
     
 }

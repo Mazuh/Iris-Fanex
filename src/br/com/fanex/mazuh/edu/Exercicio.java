@@ -23,86 +23,85 @@
  */
 package br.com.fanex.mazuh.edu;
 
+import br.com.fanex.mazuh.acesso.Usuario;
+import br.com.fanex.mazuh.edu.Curso;
+import java.io.Serializable;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author mazuh
  */
-public class Exercicio {
+@MappedSuperclass
+@Table(name = "exercicios")
+@XmlRootElement
+public class Exercicio implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
+    @Column(name = "num_aula")
+    private Integer numAula;
+    @Column(name = "qtd_perguntas")
+    private Integer qtdPerguntas;
+    @Column(name = "respostas")
+    private String respostas;
+    @Column(name = "dt_envio")
+    private String dtEnvio;
+    @Column(name = "correcao")
+    private String correcao;
+    @Column(name = "is_corrigido")
+    private Short isCorrigido;
+    @JoinColumn(name = "id_instrutor", referencedColumnName = "id")
+    @ManyToOne
+    private Usuario idInstrutor;
+    @JoinColumn(name = "id_aluno", referencedColumnName = "id")
+    @ManyToOne
+    private Usuario idAluno;
+    @JoinColumn(name = "id_curso", referencedColumnName = "id")
+    @ManyToOne
+    private Curso idCurso;
 
-    // ATRIBUTOS /////////////////////////////////////////
-     
-    private int codigo, 
-            codigoAluno, 
-            codigoCurso, 
-            codigoInstrutor, 
-            numAula, 
-            qtdRespostas;
-    
-    private String respostas, 
-            dtEnvio, 
-            correcao;
-    
-    private boolean isCorrigido;
-    
-    // GETTERS E SETTERS ///////////////////////////   
-    
-    public String getSituacao() {
-        if (this.dtEnvio == "00/00/00")
-            return "Não enviado";
-        
-        if (this.isCorrigido)
-            return "Corrigido";
-        else
-            return "Enviado em " + this.dtEnvio;
-        
-    }
-    
-    public int getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
+    public Exercicio() {
     }
 
-    public int getCodigoAluno() {
-        return codigoAluno;
+    public Exercicio(Integer id) {
+        this.id = id;
     }
 
-    public void setCodigoAluno(int codigoAluno) {
-        this.codigoAluno = codigoAluno;
+    public Integer getId() {
+        return id;
     }
 
-    public int getCodigoCurso() {
-        return codigoCurso;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public void setCodigoCurso(int codigoCurso) {
-        this.codigoCurso = codigoCurso;
-    }
-
-    public int getCodigoInstrutor() {
-        return codigoInstrutor;
-    }
-
-    public void setCodigoInstrutor(int codigoInstrutor) {
-        this.codigoInstrutor = codigoInstrutor;
-    }
-
-    public int getNumAula() {
+    public Integer getNumAula() {
         return numAula;
     }
 
-    public void setNumAula(int numAula) {
+    public void setNumAula(Integer numAula) {
         this.numAula = numAula;
     }
 
-    public int getQtdRespostas() {
-        return qtdRespostas;
+    public Integer getQtdPerguntas() {
+        return qtdPerguntas;
     }
 
-    public void setQtdRespostas(int qtdRespostas) {
-        this.qtdRespostas = qtdRespostas;
+    public void setQtdPerguntas(Integer qtdPerguntas) {
+        this.qtdPerguntas = qtdPerguntas;
     }
 
     public String getRespostas() {
@@ -129,12 +128,61 @@ public class Exercicio {
         this.correcao = correcao;
     }
 
-    public boolean isIsCorrigido() {
+    public Short getIsCorrigido() {
         return isCorrigido;
     }
 
-    public void setIsCorrigido(boolean isCorrigido) {
+    public void setIsCorrigido(Short isCorrigido) {
         this.isCorrigido = isCorrigido;
+    }
+
+    public Usuario getIdInstrutor() {
+        return idInstrutor;
+    }
+
+    public void setIdInstrutor(Usuario idInstrutor) {
+        this.idInstrutor = idInstrutor;
+    }
+
+    public Usuario getIdAluno() {
+        return idAluno;
+    }
+
+    public void setIdAluno(Usuario idAluno) {
+        this.idAluno = idAluno;
+    }
+
+    public Curso getIdCurso() {
+        return idCurso;
+    }
+
+    public void setIdCurso(Curso idCurso) {
+        this.idCurso = idCurso;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Exercicio)) {
+            return false;
+        }
+        Exercicio other = (Exercicio) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "br.com.fanex.mazuh.Exercicios[ id=" + id + " ]";
     }
     
 }

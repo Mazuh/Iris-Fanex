@@ -23,21 +23,64 @@
  */
 package br.com.fanex.mazuh.acesso;
 
+import br.com.fanex.mazuh.edu.Exercicio;
+import java.io.Serializable;
+import java.util.List;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  *
  * @author mazuh
  */
-public abstract class Usuario {
+@MappedSuperclass
+@Table(name = "usuarios")
+@XmlRootElement
+public class Usuario implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
+    @Basic(optional = false)
+    @Column(name = "nome")
+    private String nome;
+    @Basic(optional = false)
+    @Column(name = "senha")
+    private String senha;
+    @OneToMany(mappedBy = "idInstrutor")
+    private List<Exercicio> exerciciosList;
+    @OneToMany(mappedBy = "idAluno")
+    private List<Exercicio> exerciciosList1;
 
-    private int codigo;
-    private String nome, senha;
-    
-    public int getCodigo() {
-        return codigo;
+    public Usuario() {
     }
 
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
+    public Usuario(Integer id) {
+        this.id = id;
+    }
+
+    public Usuario(Integer id, String nome, String senha) {
+        this.id = id;
+        this.nome = nome;
+        this.senha = senha;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -56,4 +99,47 @@ public abstract class Usuario {
         this.senha = senha;
     }
 
+    @XmlTransient
+    public List<Exercicio> getExerciciosList() {
+        return exerciciosList;
+    }
+
+    public void setExerciciosList(List<Exercicio> exerciciosList) {
+        this.exerciciosList = exerciciosList;
+    }
+
+    @XmlTransient
+    public List<Exercicio> getExerciciosList1() {
+        return exerciciosList1;
+    }
+
+    public void setExerciciosList1(List<Exercicio> exerciciosList1) {
+        this.exerciciosList1 = exerciciosList1;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Usuario)) {
+            return false;
+        }
+        Usuario other = (Usuario) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "br.com.fanex.mazuh.Usuarios[ id=" + id + " ]";
+    }
+    
 }
