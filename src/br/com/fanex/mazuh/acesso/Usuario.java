@@ -23,12 +23,11 @@
  */
 package br.com.fanex.mazuh.acesso;
 
-import br.com.fanex.mazuh.acesso.Hierarquia;
 import br.com.fanex.mazuh.edu.Exercicio;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -47,7 +46,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author mazuh
  */
 @Entity
-@Table(name = "usuarios", catalog = "db_iris", schema = "public")
+@Table(name = "usuarios")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u"),
@@ -59,21 +58,18 @@ public class Usuario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-    @Column(name = "nome")
     private String nome;
     @Basic(optional = false)
-    @Column(name = "senha")
     private String senha;
-    @OneToMany(mappedBy = "idInstrutor")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idInstrutor")
     private List<Exercicio> exercicioList;
-    @OneToMany(mappedBy = "idAluno")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAluno")
     private List<Exercicio> exercicioList1;
-    @JoinColumn(name = "id_categoria", referencedColumnName = "id")
-    @ManyToOne
-    private Hierarquia idCategoria;
+    @JoinColumn(name = "id_hierarquia", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Hierarquia idHierarquia;
 
     public Usuario() {
     }
@@ -130,12 +126,12 @@ public class Usuario implements Serializable {
         this.exercicioList1 = exercicioList1;
     }
 
-    public Hierarquia getIdCategoria() {
-        return idCategoria;
+    public Hierarquia getIdHierarquia() {
+        return idHierarquia;
     }
 
-    public void setIdCategoria(Hierarquia idCategoria) {
-        this.idCategoria = idCategoria;
+    public void setIdHierarquia(Hierarquia idHierarquia) {
+        this.idHierarquia = idHierarquia;
     }
 
     @Override

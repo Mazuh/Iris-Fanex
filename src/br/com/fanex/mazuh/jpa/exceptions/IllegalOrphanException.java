@@ -1,4 +1,4 @@
-package br.com.fanex.mazuh.exceptions;
+package br.com.fanex.mazuh.jpa.exceptions;
 
 import java.util.ArrayList;
 import java.util.List;

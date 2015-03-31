@@ -31,7 +31,8 @@ import javax.persistence.criteria.Root;
 import br.com.fanex.mazuh.acesso.Hierarquia;
 import br.com.fanex.mazuh.acesso.Usuario;
 import br.com.fanex.mazuh.edu.Exercicio;
-import br.com.fanex.mazuh.exceptions.NonexistentEntityException;
+import br.com.fanex.mazuh.jpa.exceptions.IllegalOrphanException;
+import br.com.fanex.mazuh.jpa.exceptions.NonexistentEntityException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -63,10 +64,10 @@ public class UsuarioJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Hierarquia idCategoria = usuario.getIdCategoria();
-            if (idCategoria != null) {
-                idCategoria = em.getReference(idCategoria.getClass(), idCategoria.getId());
-                usuario.setIdCategoria(idCategoria);
+            Hierarquia idHierarquia = usuario.getIdHierarquia();
+            if (idHierarquia != null) {
+                idHierarquia = em.getReference(idHierarquia.getClass(), idHierarquia.getId());
+                usuario.setIdHierarquia(idHierarquia);
             }
             List<Exercicio> attachedExercicioList = new ArrayList<Exercicio>();
             for (Exercicio exercicioListExercicioToAttach : usuario.getExercicioList()) {
@@ -81,9 +82,9 @@ public class UsuarioJpaController implements Serializable {
             }
             usuario.setExercicioList1(attachedExercicioList1);
             em.persist(usuario);
-            if (idCategoria != null) {
-                idCategoria.getUsuarioList().add(usuario);
-                idCategoria = em.merge(idCategoria);
+            if (idHierarquia != null) {
+                idHierarquia.getUsuarioList().add(usuario);
+                idHierarquia = em.merge(idHierarquia);
             }
             for (Exercicio exercicioListExercicio : usuario.getExercicioList()) {
                 Usuario oldIdInstrutorOfExercicioListExercicio = exercicioListExercicio.getIdInstrutor();
@@ -111,21 +112,41 @@ public class UsuarioJpaController implements Serializable {
         }
     }
 
-    public void edit(Usuario usuario) throws NonexistentEntityException, Exception {
+    public void edit(Usuario usuario) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             Usuario persistentUsuario = em.find(Usuario.class, usuario.getId());
-            Hierarquia idCategoriaOld = persistentUsuario.getIdCategoria();
-            Hierarquia idCategoriaNew = usuario.getIdCategoria();
+            Hierarquia idHierarquiaOld = persistentUsuario.getIdHierarquia();
+            Hierarquia idHierarquiaNew = usuario.getIdHierarquia();
             List<Exercicio> exercicioListOld = persistentUsuario.getExercicioList();
             List<Exercicio> exercicioListNew = usuario.getExercicioList();
             List<Exercicio> exercicioList1Old = persistentUsuario.getExercicioList1();
             List<Exercicio> exercicioList1New = usuario.getExercicioList1();
-            if (idCategoriaNew != null) {
-                idCategoriaNew = em.getReference(idCategoriaNew.getClass(), idCategoriaNew.getId());
-                usuario.setIdCategoria(idCategoriaNew);
+            List<String> illegalOrphanMessages = null;
+            for (Exercicio exercicioListOldExercicio : exercicioListOld) {
+                if (!exercicioListNew.contains(exercicioListOldExercicio)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain Exercicio " + exercicioListOldExercicio + " since its idInstrutor field is not nullable.");
+                }
+            }
+            for (Exercicio exercicioList1OldExercicio : exercicioList1Old) {
+                if (!exercicioList1New.contains(exercicioList1OldExercicio)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain Exercicio " + exercicioList1OldExercicio + " since its idAluno field is not nullable.");
+                }
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            if (idHierarquiaNew != null) {
+                idHierarquiaNew = em.getReference(idHierarquiaNew.getClass(), idHierarquiaNew.getId());
+                usuario.setIdHierarquia(idHierarquiaNew);
             }
             List<Exercicio> attachedExercicioListNew = new ArrayList<Exercicio>();
             for (Exercicio exercicioListNewExercicioToAttach : exercicioListNew) {
@@ -142,19 +163,13 @@ public class UsuarioJpaController implements Serializable {
             exercicioList1New = attachedExercicioList1New;
             usuario.setExercicioList1(exercicioList1New);
             usuario = em.merge(usuario);
-            if (idCategoriaOld != null && !idCategoriaOld.equals(idCategoriaNew)) {
-                idCategoriaOld.getUsuarioList().remove(usuario);
-                idCategoriaOld = em.merge(idCategoriaOld);
+            if (idHierarquiaOld != null && !idHierarquiaOld.equals(idHierarquiaNew)) {
+                idHierarquiaOld.getUsuarioList().remove(usuario);
+                idHierarquiaOld = em.merge(idHierarquiaOld);
             }
-            if (idCategoriaNew != null && !idCategoriaNew.equals(idCategoriaOld)) {
-                idCategoriaNew.getUsuarioList().add(usuario);
-                idCategoriaNew = em.merge(idCategoriaNew);
-            }
-            for (Exercicio exercicioListOldExercicio : exercicioListOld) {
-                if (!exercicioListNew.contains(exercicioListOldExercicio)) {
-                    exercicioListOldExercicio.setIdInstrutor(null);
-                    exercicioListOldExercicio = em.merge(exercicioListOldExercicio);
-                }
+            if (idHierarquiaNew != null && !idHierarquiaNew.equals(idHierarquiaOld)) {
+                idHierarquiaNew.getUsuarioList().add(usuario);
+                idHierarquiaNew = em.merge(idHierarquiaNew);
             }
             for (Exercicio exercicioListNewExercicio : exercicioListNew) {
                 if (!exercicioListOld.contains(exercicioListNewExercicio)) {
@@ -165,12 +180,6 @@ public class UsuarioJpaController implements Serializable {
                         oldIdInstrutorOfExercicioListNewExercicio.getExercicioList().remove(exercicioListNewExercicio);
                         oldIdInstrutorOfExercicioListNewExercicio = em.merge(oldIdInstrutorOfExercicioListNewExercicio);
                     }
-                }
-            }
-            for (Exercicio exercicioList1OldExercicio : exercicioList1Old) {
-                if (!exercicioList1New.contains(exercicioList1OldExercicio)) {
-                    exercicioList1OldExercicio.setIdAluno(null);
-                    exercicioList1OldExercicio = em.merge(exercicioList1OldExercicio);
                 }
             }
             for (Exercicio exercicioList1NewExercicio : exercicioList1New) {
@@ -201,7 +210,7 @@ public class UsuarioJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -213,20 +222,28 @@ public class UsuarioJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The usuario with id " + id + " no longer exists.", enfe);
             }
-            Hierarquia idCategoria = usuario.getIdCategoria();
-            if (idCategoria != null) {
-                idCategoria.getUsuarioList().remove(usuario);
-                idCategoria = em.merge(idCategoria);
+            List<String> illegalOrphanMessages = null;
+            List<Exercicio> exercicioListOrphanCheck = usuario.getExercicioList();
+            for (Exercicio exercicioListOrphanCheckExercicio : exercicioListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Exercicio " + exercicioListOrphanCheckExercicio + " in its exercicioList field has a non-nullable idInstrutor field.");
             }
-            List<Exercicio> exercicioList = usuario.getExercicioList();
-            for (Exercicio exercicioListExercicio : exercicioList) {
-                exercicioListExercicio.setIdInstrutor(null);
-                exercicioListExercicio = em.merge(exercicioListExercicio);
+            List<Exercicio> exercicioList1OrphanCheck = usuario.getExercicioList1();
+            for (Exercicio exercicioList1OrphanCheckExercicio : exercicioList1OrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Exercicio " + exercicioList1OrphanCheckExercicio + " in its exercicioList1 field has a non-nullable idAluno field.");
             }
-            List<Exercicio> exercicioList1 = usuario.getExercicioList1();
-            for (Exercicio exercicioList1Exercicio : exercicioList1) {
-                exercicioList1Exercicio.setIdAluno(null);
-                exercicioList1Exercicio = em.merge(exercicioList1Exercicio);
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            Hierarquia idHierarquia = usuario.getIdHierarquia();
+            if (idHierarquia != null) {
+                idHierarquia.getUsuarioList().remove(usuario);
+                idHierarquia = em.merge(idHierarquia);
             }
             em.remove(usuario);
             em.getTransaction().commit();

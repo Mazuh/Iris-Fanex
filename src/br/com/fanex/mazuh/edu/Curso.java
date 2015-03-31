@@ -26,6 +26,7 @@ package br.com.fanex.mazuh.edu;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -43,7 +44,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author mazuh
  */
 @Entity
-@Table(name = "cursos", catalog = "db_iris", schema = "public")
+@Table(name = "cursos")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Curso.findAll", query = "SELECT c FROM Curso c"),
@@ -57,17 +58,18 @@ public class Curso implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
     private Integer id;
-    @Column(name = "nome")
+    @Basic(optional = false)
     private String nome;
+    @Basic(optional = false)
     @Column(name = "qtd_exercicios")
-    private Integer qtdExercicios;
+    private int qtdExercicios;
+    @Basic(optional = false)
     @Column(name = "url_gabarito")
     private String urlGabarito;
     @Column(name = "url_gabarito_alt")
     private String urlGabaritoAlt;
-    @OneToMany(mappedBy = "idCurso")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCurso")
     private List<Exercicio> exercicioList;
 
     public Curso() {
@@ -75,6 +77,13 @@ public class Curso implements Serializable {
 
     public Curso(Integer id) {
         this.id = id;
+    }
+
+    public Curso(Integer id, String nome, int qtdExercicios, String urlGabarito) {
+        this.id = id;
+        this.nome = nome;
+        this.qtdExercicios = qtdExercicios;
+        this.urlGabarito = urlGabarito;
     }
 
     public Integer getId() {
@@ -93,11 +102,11 @@ public class Curso implements Serializable {
         this.nome = nome;
     }
 
-    public Integer getQtdExercicios() {
+    public int getQtdExercicios() {
         return qtdExercicios;
     }
 
-    public void setQtdExercicios(Integer qtdExercicios) {
+    public void setQtdExercicios(int qtdExercicios) {
         this.qtdExercicios = qtdExercicios;
     }
 

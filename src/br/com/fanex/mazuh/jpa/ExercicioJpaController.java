@@ -31,7 +31,7 @@ import javax.persistence.criteria.Root;
 import br.com.fanex.mazuh.acesso.Usuario;
 import br.com.fanex.mazuh.edu.Curso;
 import br.com.fanex.mazuh.edu.Exercicio;
-import br.com.fanex.mazuh.exceptions.NonexistentEntityException;
+import br.com.fanex.mazuh.jpa.exceptions.NonexistentEntityException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

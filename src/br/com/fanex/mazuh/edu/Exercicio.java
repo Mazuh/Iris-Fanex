@@ -24,7 +24,6 @@
 package br.com.fanex.mazuh.edu;
 
 import br.com.fanex.mazuh.acesso.Usuario;
-import br.com.fanex.mazuh.edu.Curso;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -44,7 +43,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author mazuh
  */
 @Entity
-@Table(name = "exercicios", catalog = "db_iris", schema = "public")
+@Table(name = "exercicios")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Exercicio.findAll", query = "SELECT e FROM Exercicio e"),
@@ -60,28 +59,29 @@ public class Exercicio implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
     private Integer id;
+    @Basic(optional = false)
     @Column(name = "num_aula")
-    private Integer numAula;
+    private int numAula;
+    @Basic(optional = false)
     @Column(name = "qtd_perguntas")
-    private Integer qtdPerguntas;
-    @Column(name = "respostas")
+    private int qtdPerguntas;
+    @Basic(optional = false)
     private String respostas;
     @Column(name = "dt_envio")
     private String dtEnvio;
-    @Column(name = "correcao")
     private String correcao;
+    @Basic(optional = false)
     @Column(name = "is_corrigido")
-    private Short isCorrigido;
+    private short isCorrigido;
     @JoinColumn(name = "id_instrutor", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Usuario idInstrutor;
     @JoinColumn(name = "id_aluno", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Usuario idAluno;
     @JoinColumn(name = "id_curso", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Curso idCurso;
 
     public Exercicio() {
@@ -89,6 +89,14 @@ public class Exercicio implements Serializable {
 
     public Exercicio(Integer id) {
         this.id = id;
+    }
+
+    public Exercicio(Integer id, int numAula, int qtdPerguntas, String respostas, short isCorrigido) {
+        this.id = id;
+        this.numAula = numAula;
+        this.qtdPerguntas = qtdPerguntas;
+        this.respostas = respostas;
+        this.isCorrigido = isCorrigido;
     }
 
     public Integer getId() {
@@ -99,19 +107,19 @@ public class Exercicio implements Serializable {
         this.id = id;
     }
 
-    public Integer getNumAula() {
+    public int getNumAula() {
         return numAula;
     }
 
-    public void setNumAula(Integer numAula) {
+    public void setNumAula(int numAula) {
         this.numAula = numAula;
     }
 
-    public Integer getQtdPerguntas() {
+    public int getQtdPerguntas() {
         return qtdPerguntas;
     }
 
-    public void setQtdPerguntas(Integer qtdPerguntas) {
+    public void setQtdPerguntas(int qtdPerguntas) {
         this.qtdPerguntas = qtdPerguntas;
     }
 
@@ -139,11 +147,11 @@ public class Exercicio implements Serializable {
         this.correcao = correcao;
     }
 
-    public Short getIsCorrigido() {
+    public short getIsCorrigido() {
         return isCorrigido;
     }
 
-    public void setIsCorrigido(Short isCorrigido) {
+    public void setIsCorrigido(short isCorrigido) {
         this.isCorrigido = isCorrigido;
     }
 

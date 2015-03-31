@@ -63,8 +63,35 @@ public class Login extends javax.swing.JFrame {
             if (Sessao.logar(codigo, senha)){
                 // Se a sessão logar, ou seja, se logar() retornou positivo
                 // ... Logou! =D
+                
+                // Recupera objeto global da sessão,
+                // verifica sua hierarquia,
+                // abre a janela correspondente.
+                
+                switch ((Sessao.getUsuario().getIdHierarquia()).getNome()){
+                    
+                    case "aluno":
+                        new Painel_Estudante().setVisible(true);
+                        break;
+                    
+                    case "instrutor":
+                        // FALTA IMPLEMENTAR
+                        break;
+                    
+                    case "admin":
+                        // FALTA IMPLEMENTAR
+                        break;
+                        
+                    default:
+                        System.err.println("Hierarquia não encontrada.");
+                        System.exit(1); // Não pode avançar! A mensagem bonitinha é só pra usuários altorizados!
+                        break;
+                }
+                
+                // Fecha a tela de login e exibe uma mensagem bonitinha. =D
+                this.dispose();
                 JOptionPane.showMessageDialog(null,
-                        "Entrou com sucesso no sistema Iris!",
+                        "Olá! ;)\nVocê entrou no sistema Iris.",
                         "BEM-VINDO",
                         JOptionPane.PLAIN_MESSAGE);
                 
@@ -79,7 +106,7 @@ public class Login extends javax.swing.JFrame {
             
             }
             
-        }catch(Exception e){
+        }catch(NumberFormatException e){
             // Talvez o problema esteja entre a cadeira e o usuário.
             // Apenas códigos numéricos e senhas alfanuméricas válidas!
             JOptionPane.showMessageDialog(null,
@@ -88,6 +115,13 @@ public class Login extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
             
             apagarCampos();
+            
+        }catch(Exception e){
+            // OK. Talvez a falha seja do programador mesmo. '-'
+            JOptionPane.showMessageDialog(null,
+                    "Opa. Algo estranho aconteceu.\nFale com seu instrutor!", 
+                    "ERRO", 
+                    JOptionPane.ERROR_MESSAGE);
             
         }
         

@@ -26,7 +26,7 @@ package br.com.fanex.mazuh.acesso;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author mazuh
  */
 @Entity
-@Table(name = "hierarquias", catalog = "db_iris", schema = "public")
+@Table(name = "hierarquias")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Hierarquia.findAll", query = "SELECT h FROM Hierarquia h"),
@@ -54,11 +54,10 @@ public class Hierarquia implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
     private Integer id;
-    @Column(name = "nome")
+    @Basic(optional = false)
     private String nome;
-    @OneToMany(mappedBy = "idCategoria")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idHierarquia")
     private List<Usuario> usuarioList;
 
     public Hierarquia() {
@@ -66,6 +65,11 @@ public class Hierarquia implements Serializable {
 
     public Hierarquia(Integer id) {
         this.id = id;
+    }
+
+    public Hierarquia(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
     }
 
     public Integer getId() {

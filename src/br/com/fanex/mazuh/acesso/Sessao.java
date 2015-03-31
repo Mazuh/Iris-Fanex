@@ -34,30 +34,79 @@ public class Sessao {
     
     private static Usuario usuario_logado;
     
+    /*
+    Retorna o objeto global do usuário logado.
+    */
     public static Usuario getUsuario(){
         return Sessao.usuario_logado;
     }
     
+    /*
+    Para declarar como permanente alterações feitas no usuário logado, deve-se
+    passar por argumento ao commit(arg) e ele irá tentar salvar tudo na persistência
+    e na sessão.
+    */
+    public static boolean commit(Usuario usuario){
+        
+        if (Sessao.usuario_logado.equals(usuario)){
+            // mesmo id
+            try{
+                // tenta salvar...
+                getUsuarioDAO().edit(usuario); // ... no banco...
+                Sessao.usuario_logado = usuario; // ... e se não tiver dado erro, salva na sessão.
+                return true;
+                
+            } catch(Exception e){
+                // erro com o objeto de persistência
+                System.err.println("Erro ao tentar commitar na sessão.");
+                return false;
+            }
+            
+        } else{
+            // id do usuário logado não é o mesmo que o que requisita o commit.
+            System.err.println("Usuário não altorizado tentando commitar na sessão.");
+            return false;
+        }
+    }
+    
+    /*
+    Encontra o objeto com código correspondente no banco, confere sua senha
+    e declara-o como objeto global da sessão.
+    */
     public static boolean logar(int codigo, String tentativaDeSenha){
         
         try{
-            UsuarioJpaController usuarioDao = new UsuarioJpaController(DAO.getEntityManagerFactory());
-            Usuario usuarioEncontrado = usuarioDao.findUsuario(codigo);
             
-            if (tentativaDeSenha.equals(usuarioEncontrado.getSenha()))
+            Usuario usuarioEncontrado = getUsuarioDAO().findUsuario(codigo);
+            
+            if (tentativaDeSenha.equals(usuarioEncontrado.getSenha())){
+                // Objeto encontrado e com senha compatível, então logado com sucesso.
+                Sessao.usuario_logado = usuarioEncontrado;
                 return true;
-            else
+                
+            }else{
+                // Senha incorreta.
                 return false;
-            
+            }
             
         }catch(Exception e){
+            // Erro com acesso ao objeto.
             return false;
         }
         
     }
     
+    /*
+    Simplesmente diz que ninguém está logado agora.
+    */
     public static void sair(){
         Sessao.usuario_logado = null;
     }
     
+    /*
+    Pega o controlador do objeto.
+    */
+    private static UsuarioJpaController getUsuarioDAO(){
+        return new UsuarioJpaController(DAO.getEntityManagerFactory());
+    }
 }

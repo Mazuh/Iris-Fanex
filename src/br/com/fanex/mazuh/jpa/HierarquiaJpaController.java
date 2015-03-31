@@ -30,7 +30,8 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import br.com.fanex.mazuh.acesso.Usuario;
-import br.com.fanex.mazuh.exceptions.NonexistentEntityException;
+import br.com.fanex.mazuh.jpa.exceptions.IllegalOrphanException;
+import br.com.fanex.mazuh.jpa.exceptions.NonexistentEntityException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -67,12 +68,12 @@ public class HierarquiaJpaController implements Serializable {
             hierarquia.setUsuarioList(attachedUsuarioList);
             em.persist(hierarquia);
             for (Usuario usuarioListUsuario : hierarquia.getUsuarioList()) {
-                Hierarquia oldIdCategoriaOfUsuarioListUsuario = usuarioListUsuario.getIdCategoria();
-                usuarioListUsuario.setIdCategoria(hierarquia);
+                Hierarquia oldIdHierarquiaOfUsuarioListUsuario = usuarioListUsuario.getIdHierarquia();
+                usuarioListUsuario.setIdHierarquia(hierarquia);
                 usuarioListUsuario = em.merge(usuarioListUsuario);
-                if (oldIdCategoriaOfUsuarioListUsuario != null) {
-                    oldIdCategoriaOfUsuarioListUsuario.getUsuarioList().remove(usuarioListUsuario);
-                    oldIdCategoriaOfUsuarioListUsuario = em.merge(oldIdCategoriaOfUsuarioListUsuario);
+                if (oldIdHierarquiaOfUsuarioListUsuario != null) {
+                    oldIdHierarquiaOfUsuarioListUsuario.getUsuarioList().remove(usuarioListUsuario);
+                    oldIdHierarquiaOfUsuarioListUsuario = em.merge(oldIdHierarquiaOfUsuarioListUsuario);
                 }
             }
             em.getTransaction().commit();
@@ -83,7 +84,7 @@ public class HierarquiaJpaController implements Serializable {
         }
     }
 
-    public void edit(Hierarquia hierarquia) throws NonexistentEntityException, Exception {
+    public void edit(Hierarquia hierarquia) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -91,6 +92,18 @@ public class HierarquiaJpaController implements Serializable {
             Hierarquia persistentHierarquia = em.find(Hierarquia.class, hierarquia.getId());
             List<Usuario> usuarioListOld = persistentHierarquia.getUsuarioList();
             List<Usuario> usuarioListNew = hierarquia.getUsuarioList();
+            List<String> illegalOrphanMessages = null;
+            for (Usuario usuarioListOldUsuario : usuarioListOld) {
+                if (!usuarioListNew.contains(usuarioListOldUsuario)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain Usuario " + usuarioListOldUsuario + " since its idHierarquia field is not nullable.");
+                }
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
             List<Usuario> attachedUsuarioListNew = new ArrayList<Usuario>();
             for (Usuario usuarioListNewUsuarioToAttach : usuarioListNew) {
                 usuarioListNewUsuarioToAttach = em.getReference(usuarioListNewUsuarioToAttach.getClass(), usuarioListNewUsuarioToAttach.getId());
@@ -99,20 +112,14 @@ public class HierarquiaJpaController implements Serializable {
             usuarioListNew = attachedUsuarioListNew;
             hierarquia.setUsuarioList(usuarioListNew);
             hierarquia = em.merge(hierarquia);
-            for (Usuario usuarioListOldUsuario : usuarioListOld) {
-                if (!usuarioListNew.contains(usuarioListOldUsuario)) {
-                    usuarioListOldUsuario.setIdCategoria(null);
-                    usuarioListOldUsuario = em.merge(usuarioListOldUsuario);
-                }
-            }
             for (Usuario usuarioListNewUsuario : usuarioListNew) {
                 if (!usuarioListOld.contains(usuarioListNewUsuario)) {
-                    Hierarquia oldIdCategoriaOfUsuarioListNewUsuario = usuarioListNewUsuario.getIdCategoria();
-                    usuarioListNewUsuario.setIdCategoria(hierarquia);
+                    Hierarquia oldIdHierarquiaOfUsuarioListNewUsuario = usuarioListNewUsuario.getIdHierarquia();
+                    usuarioListNewUsuario.setIdHierarquia(hierarquia);
                     usuarioListNewUsuario = em.merge(usuarioListNewUsuario);
-                    if (oldIdCategoriaOfUsuarioListNewUsuario != null && !oldIdCategoriaOfUsuarioListNewUsuario.equals(hierarquia)) {
-                        oldIdCategoriaOfUsuarioListNewUsuario.getUsuarioList().remove(usuarioListNewUsuario);
-                        oldIdCategoriaOfUsuarioListNewUsuario = em.merge(oldIdCategoriaOfUsuarioListNewUsuario);
+                    if (oldIdHierarquiaOfUsuarioListNewUsuario != null && !oldIdHierarquiaOfUsuarioListNewUsuario.equals(hierarquia)) {
+                        oldIdHierarquiaOfUsuarioListNewUsuario.getUsuarioList().remove(usuarioListNewUsuario);
+                        oldIdHierarquiaOfUsuarioListNewUsuario = em.merge(oldIdHierarquiaOfUsuarioListNewUsuario);
                     }
                 }
             }
@@ -133,7 +140,7 @@ public class HierarquiaJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -145,10 +152,16 @@ public class HierarquiaJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The hierarquia with id " + id + " no longer exists.", enfe);
             }
-            List<Usuario> usuarioList = hierarquia.getUsuarioList();
-            for (Usuario usuarioListUsuario : usuarioList) {
-                usuarioListUsuario.setIdCategoria(null);
-                usuarioListUsuario = em.merge(usuarioListUsuario);
+            List<String> illegalOrphanMessages = null;
+            List<Usuario> usuarioListOrphanCheck = hierarquia.getUsuarioList();
+            for (Usuario usuarioListOrphanCheckUsuario : usuarioListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Hierarquia (" + hierarquia + ") cannot be destroyed since the Usuario " + usuarioListOrphanCheckUsuario + " in its usuarioList field has a non-nullable idHierarquia field.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(hierarquia);
             em.getTransaction().commit();

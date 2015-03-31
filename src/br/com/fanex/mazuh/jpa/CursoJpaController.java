@@ -30,7 +30,8 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import br.com.fanex.mazuh.edu.Exercicio;
-import br.com.fanex.mazuh.exceptions.NonexistentEntityException;
+import br.com.fanex.mazuh.jpa.exceptions.IllegalOrphanException;
+import br.com.fanex.mazuh.jpa.exceptions.NonexistentEntityException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -83,7 +84,7 @@ public class CursoJpaController implements Serializable {
         }
     }
 
-    public void edit(Curso curso) throws NonexistentEntityException, Exception {
+    public void edit(Curso curso) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -91,6 +92,18 @@ public class CursoJpaController implements Serializable {
             Curso persistentCurso = em.find(Curso.class, curso.getId());
             List<Exercicio> exercicioListOld = persistentCurso.getExercicioList();
             List<Exercicio> exercicioListNew = curso.getExercicioList();
+            List<String> illegalOrphanMessages = null;
+            for (Exercicio exercicioListOldExercicio : exercicioListOld) {
+                if (!exercicioListNew.contains(exercicioListOldExercicio)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain Exercicio " + exercicioListOldExercicio + " since its idCurso field is not nullable.");
+                }
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
             List<Exercicio> attachedExercicioListNew = new ArrayList<Exercicio>();
             for (Exercicio exercicioListNewExercicioToAttach : exercicioListNew) {
                 exercicioListNewExercicioToAttach = em.getReference(exercicioListNewExercicioToAttach.getClass(), exercicioListNewExercicioToAttach.getId());
@@ -99,12 +112,6 @@ public class CursoJpaController implements Serializable {
             exercicioListNew = attachedExercicioListNew;
             curso.setExercicioList(exercicioListNew);
             curso = em.merge(curso);
-            for (Exercicio exercicioListOldExercicio : exercicioListOld) {
-                if (!exercicioListNew.contains(exercicioListOldExercicio)) {
-                    exercicioListOldExercicio.setIdCurso(null);
-                    exercicioListOldExercicio = em.merge(exercicioListOldExercicio);
-                }
-            }
             for (Exercicio exercicioListNewExercicio : exercicioListNew) {
                 if (!exercicioListOld.contains(exercicioListNewExercicio)) {
                     Curso oldIdCursoOfExercicioListNewExercicio = exercicioListNewExercicio.getIdCurso();
@@ -133,7 +140,7 @@ public class CursoJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -145,10 +152,16 @@ public class CursoJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The curso with id " + id + " no longer exists.", enfe);
             }
-            List<Exercicio> exercicioList = curso.getExercicioList();
-            for (Exercicio exercicioListExercicio : exercicioList) {
-                exercicioListExercicio.setIdCurso(null);
-                exercicioListExercicio = em.merge(exercicioListExercicio);
+            List<String> illegalOrphanMessages = null;
+            List<Exercicio> exercicioListOrphanCheck = curso.getExercicioList();
+            for (Exercicio exercicioListOrphanCheckExercicio : exercicioListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Curso (" + curso + ") cannot be destroyed since the Exercicio " + exercicioListOrphanCheckExercicio + " in its exercicioList field has a non-nullable idCurso field.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(curso);
             em.getTransaction().commit();
