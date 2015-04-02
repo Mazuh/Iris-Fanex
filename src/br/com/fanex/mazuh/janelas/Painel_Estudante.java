@@ -211,7 +211,7 @@ public class Painel_Estudante extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     /*
-    Clicar aqui provoca logoff.
+    Clicar aqui provoca logoff e reexibição da tela de Login.
     */
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         JOptionPane.showMessageDialog(null, "Você saiu do sistema.\nAté logo!",
@@ -219,6 +219,10 @@ public class Painel_Estudante extends javax.swing.JFrame {
                 JOptionPane.PLAIN_MESSAGE);
         
         Sessao.sair();
+        
+        this.dispose();
+        
+        new Login().setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
