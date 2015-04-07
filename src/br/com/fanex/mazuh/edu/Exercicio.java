@@ -98,7 +98,40 @@ public class Exercicio implements Serializable {
         this.respostas = respostas;
         this.isCorrigido = isCorrigido;
     }
-
+    
+    /*
+    Retorna nome representativo e identificável para o exercício.
+    (PS: por natureza, um exercício não tem um atributo de nome.)
+    */
+    @Override
+    public String toString(){
+        
+        return( 
+                " [" + this.getSituacao() + "] "
+                + this.idCurso.toString() 
+                + " - Aula " + this.numAula
+        );
+        
+    }
+    
+    /*
+    Uma verificação das variavéis é efetuada.
+    Será retornado um texto representando a situação 
+    */
+    public String getSituacao(){
+        
+        if (this.isCorrigido == 1)
+            // foi corrigido
+            return "Corrigido";
+        else if (this.dtEnvio == null || this.dtEnvio.equals("00/00/00") || this.dtEnvio.equals(""))
+            // o aluno não enviou (ninguém sabe nem se ele fez ou não)
+            return "Não enviado";
+        else
+            // foi enviado e aguarda correção.
+            return "Enviado em " + this.dtEnvio;
+        
+    }
+    
     public Integer getId() {
         return id;
     }
@@ -199,9 +232,10 @@ public class Exercicio implements Serializable {
         return true;
     }
 
+    /*
     @Override
     public String toString() {
         return "br.com.fanex.mazuh.Exercicio[ id=" + id + " ]";
-    }
+    }*/
     
 }

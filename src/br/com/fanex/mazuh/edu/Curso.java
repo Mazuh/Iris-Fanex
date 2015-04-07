@@ -85,6 +85,11 @@ public class Curso implements Serializable {
         this.qtdExercicios = qtdExercicios;
         this.urlGabarito = urlGabarito;
     }
+    
+    @Override
+    public String toString(){
+        return this.nome;
+    }
 
     public Integer getId() {
         return id;
@@ -155,9 +160,10 @@ public class Curso implements Serializable {
         return true;
     }
 
+    /*
     @Override
     public String toString() {
         return "br.com.fanex.mazuh.Curso[ id=" + id + " ]";
-    }
+    }*/
     
 }
