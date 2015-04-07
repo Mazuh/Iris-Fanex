@@ -32,7 +32,7 @@ import javax.swing.JOptionPane;
  */
 public class Exercicio_Escolha extends javax.swing.JFrame {
 
-    private final int ARG; // define o que será feita com a escolha...
+    private static int ARG; // define o que será feita com a escolha...
     
     public final static int ARG_VER = 1; // ... se é pra visualizar o escolhido...
     public final static int ARG_CONTINUAR = 2; // ... ou prosseguir uma resolução
@@ -42,7 +42,7 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
      * @param objetivo
     */
     public Exercicio_Escolha(int objetivo){
-        this.ARG = objetivo;
+        Exercicio_Escolha.ARG = objetivo;
         
         this.setUndecorated(true); // oculta barra superior
         
@@ -58,7 +58,7 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
     */
     private void preencherComboBox(){
         System.out.println("preenchendo");
-        switch(this.ARG){
+        switch(Exercicio_Escolha.ARG){
             case Exercicio_Escolha.ARG_VER:
                 // ...
                 System.out.println("ver");
@@ -100,6 +100,13 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
         btnCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+            }
+        });
         addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 formFocusGained(evt);
@@ -176,9 +183,13 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
     }//GEN-LAST:event_btnContinuarActionPerformed
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+        
+    }//GEN-LAST:event_formFocusGained
+
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         System.out.println("foco");
         preencherComboBox();
-    }//GEN-LAST:event_formFocusGained
+    }//GEN-LAST:event_formWindowGainedFocus
 
     /**
      * @param args the command line arguments
@@ -211,7 +222,7 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Exercicio_Escolha(0).setVisible(true);
+                new Exercicio_Escolha(Exercicio_Escolha.ARG).setVisible(true);
             }
         });
     }
