@@ -54,9 +54,9 @@ public class Painel_Estudante extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         btnNovoExercicio = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnContinuar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
+        btnVer = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jButton8 = new javax.swing.JButton();
@@ -80,12 +80,12 @@ public class Painel_Estudante extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/escrever.gif"))); // NOI18N
-        jButton2.setText("Continuar");
-        jButton2.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnContinuar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/escrever.gif"))); // NOI18N
+        btnContinuar.setText("Continuar");
+        btnContinuar.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnContinuar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnContinuarActionPerformed(evt);
             }
         });
 
@@ -95,12 +95,12 @@ public class Painel_Estudante extends javax.swing.JFrame {
         jLabel2.setText("EXERCÍCIOS DE REVISÃO");
         jLabel2.setOpaque(true);
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/pasta.gif"))); // NOI18N
-        jButton4.setText("Visualizar");
-        jButton4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnVer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/pasta.gif"))); // NOI18N
+        btnVer.setText("Visualizar");
+        btnVer.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnVer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnVerActionPerformed(evt);
             }
         });
 
@@ -120,7 +120,7 @@ public class Painel_Estudante extends javax.swing.JFrame {
         jLabel4.setOpaque(true);
 
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/discutir.gif"))); // NOI18N
-        jButton8.setText("Chamar um instrutor!");
+        jButton8.setText("Chamar instrutor");
         jButton8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -150,8 +150,8 @@ public class Painel_Estudante extends javax.swing.JFrame {
                             .addComponent(jLabel2)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(btnNovoExercicio, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
-                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnContinuar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
+                            .addComponent(btnVer, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(30, 30, 30)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
@@ -173,7 +173,7 @@ public class Painel_Estudante extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnNovoExercicio)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2))
+                        .addComponent(btnContinuar))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -182,7 +182,7 @@ public class Painel_Estudante extends javax.swing.JFrame {
                         .addComponent(jButton6)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton4)
+                    .addComponent(btnVer)
                     .addComponent(jButton3))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
@@ -193,21 +193,23 @@ public class Painel_Estudante extends javax.swing.JFrame {
     /*
     Abrirá um form de diálogo para o usuário escolher o exercício desejado dentre os incompletos.
     */
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarActionPerformed
         new Exercicio_Escolha(Exercicio_Escolha.ARG_CONTINUAR).setVisible(true);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnContinuarActionPerformed
 
     /*
-    Vai para o form de preenchimento de respostas dos exercícios.
+    Abre a caixa de diálogo que auxiliará o usuário na criação de um novo exercício.
     */
     private void btnNovoExercicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoExercicioActionPerformed
-
-        //new Exercicio_Responder().setVisible(true);
+        new Exercicio_Criar().setVisible(true);
     }//GEN-LAST:event_btnNovoExercicioActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+    /*
+    Abre a caixa de diálogo em que o usuário poderá escolher um de seus exercícios para ver.
+    */
+    private void btnVerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerActionPerformed
+        new Exercicio_Escolha(Exercicio_Escolha.ARG_VER).setVisible(true);
+    }//GEN-LAST:event_btnVerActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
@@ -268,10 +270,10 @@ public class Painel_Estudante extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnContinuar;
     private javax.swing.JButton btnNovoExercicio;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnVer;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
