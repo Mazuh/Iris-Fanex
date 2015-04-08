@@ -26,6 +26,7 @@ package br.com.fanex.mazuh.acesso;
 import br.com.fanex.mazuh.jpa.UsuarioJpaController;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -33,40 +34,77 @@ import javax.persistence.Persistence;
  */
 public class Sessao {
     
-    private static Usuario usuario_logado;
+    private static Usuario usuario_logado = null;
     
     /*
     Retorna o objeto global do usuário logado.
     */
     public static Usuario usuario_logado(){
-        return Sessao.usuario_logado;
+        if (usuario_logado == null){
+            // se for nulo, emita ume erro fatal.
+            JOptionPane.showMessageDialog(null,
+                    "Erro no getter da sessão.",
+                    "ERRO",
+                    JOptionPane.ERROR_MESSAGE);
+            
+            System.exit(1);
+            return null;
+        
+        } else{
+            // se tiver alguém logado.
+            return Sessao.usuario_logado;
+        }
     }
     
     /*
     Para declarar como permanente alterações feitas no usuário logado, deve-se
     passar por argumento ao commit(arg) e ele irá tentar salvar tudo na persistência
     e na sessão.
+    Qualquer erro aqui será tratado como fatal pelo sistema.
     */
-    public static boolean commit(Usuario usuario){
+    public static void commit(Usuario usuario){
         
-        if (Sessao.usuario_logado.equals(usuario)){
-            // mesmo id
+        if (Sessao.usuario_logado().equals(usuario)){
+            // mesmo id, pode tentar efetuar o commit
             try{
                 // tenta salvar...
                 getUsuarioDAO().edit(usuario); // ... no banco...
                 Sessao.usuario_logado = usuario; // ... e se não tiver dado erro, salva na sessão.
-                return true;
                 
             } catch(Exception e){
                 // erro com o objeto de persistência
-                System.err.println("Erro ao tentar commitar na sessão.");
-                return false;
+                JOptionPane.showMessageDialog(null, 
+                        "Erro ao tentar commitar na sessão.",
+                        "ERRO FATAL",
+                        JOptionPane.ERROR_MESSAGE);
+                System.exit(1);
             }
             
         } else{
             // id do usuário logado não é o mesmo que o que requisita o commit.
-            System.err.println("Usuário não altorizado tentando commitar na sessão.");
-            return false;
+            JOptionPane.showMessageDialog(null, 
+                        "Acesso não autorizado tentando commitar na sessão.",
+                        "ERRO FATAL",
+                        JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
+    }
+    
+    /*
+    Refaz a query do usuário logado ao banco de dados.
+    */
+    public void refresh(){
+        try{
+            
+            // refresh:
+            usuario_logado = getUsuarioDAO().findUsuario(usuario_logado().getId());
+            
+        } catch(Exception e){
+            // erro?
+            JOptionPane.showMessageDialog(null,
+                    "Erro ao tentar acessar banco de dados via refresh.",
+                    "ERRO",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
     

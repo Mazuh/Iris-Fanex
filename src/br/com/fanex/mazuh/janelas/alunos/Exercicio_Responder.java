@@ -23,7 +23,10 @@
  */
 package br.com.fanex.mazuh.janelas.alunos;
 
+import br.com.fanex.mazuh.acesso.Sessao;
 import br.com.fanex.mazuh.edu.Exercicio;
+import br.com.fanex.mazuh.jpa.ExercicioJpaController;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -33,6 +36,7 @@ public class Exercicio_Responder extends javax.swing.JFrame {
 
     // exercício que pode estar sem respostas (novo) ou não (a continuar)
     private static Exercicio exercicio;
+    private final ExercicioJpaController exercicioDAO; // DAO usado frequentemente
     // baseado nisso, no futuro será definido se será usado o metodo de alteração ou de criação
     private static int modo;
     
@@ -48,7 +52,9 @@ public class Exercicio_Responder extends javax.swing.JFrame {
     
     public Exercicio_Responder(int modo, Exercicio exercicio) {
         Exercicio_Responder.modo = modo;
-
+        Exercicio_Responder.exercicio = exercicio;
+        this.exercicioDAO = new ExercicioJpaController(Sessao.getEntityManagerFactory());
+        
         initComponents();
         
         // "converte" o modo int em modo ascii...
@@ -65,6 +71,65 @@ public class Exercicio_Responder extends javax.swing.JFrame {
         
         // coloca um subtítulo bem bonito com as informações do exercício
         jSubtitulo.setText(exercicio.toString());
+        
+        // se for o caso, preenche com respostas encontradas.
+        if (modo == MODO_CONTINUAR)
+            txtRespostas.setText(exercicio.getRespostas());
+        
+    }
+    
+    /*
+    Se houver um exercício na persistência, ele será destruído.
+    */
+    private boolean destruirExercicio(){
+        try{
+            
+            exercicioDAO.destroy(exercicio.getId());
+            this.dispose(); // não faz sentido estar numa janela morta...
+            return true;
+            
+        }catch(Exception e){
+            mostrarErro("Não foi possível deletar este exercício.\n"
+                    + "Peça orientação a seu instrutor quanto a isso.");
+            return false;
+        }
+    }
+    
+    /*
+    Irá persistir o objeto lógico Exercicio no banco de dados.
+    Isso pode ocorrer por edição ou por criação, algo que o método irá escolher.
+    */
+    private boolean persistirExercicio(){
+        try {
+        
+            // escolhe qual método usar para persistir
+            if (modo == MODO_INICIAR) {
+                exercicioDAO.create(exercicio);
+                JOptionPane.showConfirmDialog(null, "Exercício criado com sucesso!");
+                return true;
+                
+            } else if (modo == MODO_CONTINUAR) {
+                exercicioDAO.edit(exercicio);
+                JOptionPane.showMessageDialog(null, "Exercício editado com sucesso!");
+                return true;
+                
+            } else{ // se não foi possível escolher nenhum método
+                mostrarErro("Parâmetro desconhecido na tentativa de persistência.");
+                return false;
+            }
+
+        } catch (Exception e) {
+            // Métodos falharam.
+            mostrarErro("Falha na tentativa de uso dos DAO na persistência.");
+            return false;
+        }
+    }
+    
+    /*
+    Método auxiliar. Apenas mite um erro na tela.
+    */  
+    private void mostrarErro(String mensagem){
+        JOptionPane.showMessageDialog(null, mensagem, "ERRO", JOptionPane.ERROR_MESSAGE);
     }
     
     /**
@@ -103,9 +168,19 @@ public class Exercicio_Responder extends javax.swing.JFrame {
 
         btnSalvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/salvar.gif"))); // NOI18N
         btnSalvar.setText("Salvar exercício para terminar depois");
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarActionPerformed(evt);
+            }
+        });
 
         btnDeletar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/lixo.gif"))); // NOI18N
         btnDeletar.setText("Destruir este exercício");
+        btnDeletar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeletarActionPerformed(evt);
+            }
+        });
 
         btnVoltar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/usuario.gif"))); // NOI18N
         btnVoltar.setText("Voltar para o painel");
@@ -161,12 +236,72 @@ public class Exercicio_Responder extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     /*
-    Fecha a janela.
-    Possível implementação: verificar se há alterações e perguntar se o usuário quer salvá-las.
+    Pergunta se o usuário quer salvar as alterações.
+    Volta para o painel (a exceção do clique no botão de cancelar).
     */
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
-        this.dispose();
+        int resposta = JOptionPane.showConfirmDialog(null,
+                "Parece que você está tentando sair desta tela.\n"
+                        + "Se não salvar antes disso, você vai perder as mudanças feitas!\n"
+                        + "Deseja salvar?");
+        
+        if (resposta == JOptionPane.YES_OPTION){
+            // salva e sai
+            exercicio.setRespostas(txtRespostas.getText());
+            persistirExercicio();
+            this.dispose();
+        
+        } else if (resposta == JOptionPane.NO_OPTION){
+            // sṕ sai.
+            this.dispose();
+        
+        } // else cancelar: faz nada.
+        
     }//GEN-LAST:event_btnVoltarActionPerformed
+
+    /*
+    Com a devida permissão do usuário, o exercício será deletado do bd!
+    */
+    private void btnDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletarActionPerformed
+        int resposta = JOptionPane.showConfirmDialog(null,
+                "Deseja realmente deletar este exercício de revisão?\n"
+                + "Ele será destruido para sempre (e 'sempre' é um tempo beeem longo)!");
+        
+        if (resposta == JOptionPane.YES_OPTION){
+            // destrua!!!
+            boolean deletou = destruirExercicio();
+            
+            if (deletou){ // Msg bonitinha.
+                JOptionPane.showMessageDialog(null,
+                        "Exercício destruído com sucesso!",
+                        "THIS IS SPARTA!!!",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
+        } else{
+            System.out.println("I find your lack of faith is disturbing...");
+        }
+    }//GEN-LAST:event_btnDeletarActionPerformed
+
+    /*
+    Salva o progresso e volta ao painel.
+    */
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        // persiste
+        exercicio.setRespostas(txtRespostas.getText());
+        boolean salvou = persistirExercicio();
+        
+        // avisa que deu tudo certo e sai!
+        if (salvou) {
+            
+            JOptionPane.showMessageDialog(null,
+                    "Exercício salvo com sucesso.\nClique em 'Continuar' em seu painel quando quiser voltar e finalizá-lo.",
+                    "TUDO OK!",
+                    JOptionPane.PLAIN_MESSAGE);
+            
+            this.dispose(); // tchau!
+        }
+        
+    }//GEN-LAST:event_btnSalvarActionPerformed
 
     /**
      * @param args the command line arguments
