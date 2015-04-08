@@ -23,8 +23,9 @@
  */
 package br.com.fanex.mazuh.acesso;
 
-import br.com.fanex.mazuh.jpa.DAO;
 import br.com.fanex.mazuh.jpa.UsuarioJpaController;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  *
@@ -107,6 +108,26 @@ public class Sessao {
     Pega o controlador do objeto.
     */
     private static UsuarioJpaController getUsuarioDAO(){
-        return new UsuarioJpaController(DAO.getEntityManagerFactory());
+        return new UsuarioJpaController(Sessao.getEntityManagerFactory());
     }
+    
+    
+    /*
+    Retorna uma EntityManagerFactory para os DAO usarem.
+    
+    "Objeto de acesso a dados (ou simplesmente DAO, acrônimo de Data Access
+    Object), é um padrão para persistência de dados que permite separar
+    regras de negócio das regras de acesso a banco de dados. Numa aplicação
+    que utilize a arquitetura MVC, todas as funcionalidades de bancos de
+    dados, tais como obter as conexões, mapear objetos Java para tipos de
+    dados SQL ou executar comandos SQL, devem ser feitas por classes DAO."
+    (Wikipédia)
+
+    As classes DAO são os controladores JPA presentes neste mesmo pacote.
+    */
+
+    public static EntityManagerFactory getEntityManagerFactory(){
+        return Persistence.createEntityManagerFactory("Projeto_Iris__Fanex_PU");
+    }
+    
 }

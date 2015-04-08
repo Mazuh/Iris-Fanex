@@ -27,7 +27,6 @@ import br.com.fanex.mazuh.acesso.Sessao;
 import br.com.fanex.mazuh.edu.Curso;
 import br.com.fanex.mazuh.edu.Exercicio;
 import br.com.fanex.mazuh.jpa.CursoJpaController;
-import br.com.fanex.mazuh.jpa.DAO;
 import java.awt.Color;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -56,7 +55,7 @@ public class Exercicio_Criar extends javax.swing.JFrame {
     Verifica se há cursos no bd e, se houver, coloca-os na combobox.
     */
     private void preencherCbCursos(){
-        CursoJpaController cursosDAO = new CursoJpaController(DAO.getEntityManagerFactory());
+        CursoJpaController cursosDAO = new CursoJpaController(Sessao.getEntityManagerFactory());
         
         // verifica se há cursos
         if (cursosDAO.getCursoCount() <= 0)

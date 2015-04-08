@@ -23,8 +23,8 @@
  */
 package br.com.fanex.mazuh;
 
+import br.com.fanex.mazuh.acesso.Sessao;
 import br.com.fanex.mazuh.janelas.Login;
-import br.com.fanex.mazuh.jpa.DAO;
 import br.com.fanex.mazuh.jpa.UsuarioJpaController;
 
 /**
@@ -40,7 +40,7 @@ public class Iris {
         
         // A primeira conexão com o banco de dados é lenta.
         // O objeto abaixo serve pra realizar esse lerdo processo antes da aplicação estar visível ao user.
-        UsuarioJpaController foo = new UsuarioJpaController(DAO.getEntityManagerFactory());
+        UsuarioJpaController foo = new UsuarioJpaController(Sessao.getEntityManagerFactory());
         foo.findUsuario(0);
         foo = null; // manda o objeto para o garbage collector
         
