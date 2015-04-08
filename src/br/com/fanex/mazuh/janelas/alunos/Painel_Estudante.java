@@ -22,9 +22,10 @@
  * THE SOFTWARE.
  */
 
-package br.com.fanex.mazuh.janelas;
+package br.com.fanex.mazuh.janelas.alunos;
 
 import br.com.fanex.mazuh.acesso.Sessao;
+import br.com.fanex.mazuh.janelas.Login;
 import javax.swing.JOptionPane;
 
 /**

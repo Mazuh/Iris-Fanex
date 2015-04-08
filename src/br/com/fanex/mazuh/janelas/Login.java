@@ -23,6 +23,7 @@
  */
 package br.com.fanex.mazuh.janelas;
 
+import br.com.fanex.mazuh.janelas.alunos.Painel_Estudante;
 import br.com.fanex.mazuh.acesso.Sessao;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;

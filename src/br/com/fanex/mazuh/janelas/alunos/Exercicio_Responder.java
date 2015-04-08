@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package br.com.fanex.mazuh.janelas;
+package br.com.fanex.mazuh.janelas.alunos;
 
 import br.com.fanex.mazuh.edu.Exercicio;
 
