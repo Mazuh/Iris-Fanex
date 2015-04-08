@@ -194,7 +194,7 @@ public class Painel_Estudante extends javax.swing.JFrame {
     Abrirá um form de diálogo para o usuário escolher o exercício desejado dentre os incompletos.
     */
     private void btnContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarActionPerformed
-        new Exercicio_Escolha(Exercicio_Escolha.ARG_CONTINUAR).setVisible(true);
+        new Exercicio_Escolha(Exercicio_Escolha.MODO_CONTINUAR).setVisible(true);
     }//GEN-LAST:event_btnContinuarActionPerformed
 
     /*
@@ -208,7 +208,7 @@ public class Painel_Estudante extends javax.swing.JFrame {
     Abre a caixa de diálogo em que o usuário poderá escolher um de seus exercícios para ver.
     */
     private void btnVerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerActionPerformed
-        new Exercicio_Escolha(Exercicio_Escolha.ARG_VER).setVisible(true);
+        new Exercicio_Escolha(Exercicio_Escolha.MODO_VER).setVisible(true);
     }//GEN-LAST:event_btnVerActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed

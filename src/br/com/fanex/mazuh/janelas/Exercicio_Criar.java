@@ -23,7 +23,11 @@
  */
 package br.com.fanex.mazuh.janelas;
 
+import br.com.fanex.mazuh.jpa.CursoJpaController;
+import br.com.fanex.mazuh.jpa.DAO;
 import java.awt.Color;
+import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -44,6 +48,43 @@ public class Exercicio_Criar extends javax.swing.JFrame {
         this.getContentPane().setBackground(new Color(39,174,96)); // cor de fundo verde
         
     }
+    
+    private void preencherCbCursos(){
+        CursoJpaController cursosDAO = new CursoJpaController(DAO.getEntityManagerFactory());
+        
+        // verifica se há cursos
+        if (cursosDAO.getCursoCount() <= 0)
+            die("Não foram encontrados cursos no banco de dados!", "Ops...");
+        
+        // busca-os
+        List cursos = cursosDAO.findCursoEntities();
+        
+        // preenche combobox a combobox com o que foi encontrado
+        jCursos.removeAllItems();
+        jCursos.addItem("---");
+        for (int i = 0; i < cursos.size(); i++){
+            jCursos.addItem(cursos.get(i));
+        }
+        
+    }
+    
+    private void criarFormDeResposta(){
+        
+    }
+    
+    private boolean camposEstaoOk(){
+        return true;
+    }
+    
+    /*
+    Força a saída do usuário desta caixa de diaĺogo.
+    Antes disso, é emitida uma mensagem na tela.
+    */
+    private void die(String msg, String titulo){
+        this.dispose();
+        JOptionPane.showMessageDialog(null, msg, titulo, JOptionPane.ERROR_MESSAGE);
+        
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -55,19 +96,26 @@ public class Exercicio_Criar extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        jCursos = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
+        jNumDaAula = new javax.swing.JSpinner();
         btnNovo = new javax.swing.JToggleButton();
         btnCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Nome do curso (presente na frente da apostila):");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "---" }));
+        jCursos.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "---" }));
 
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -94,14 +142,14 @@ public class Exercicio_Criar extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jCursos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addGap(4, 4, 4)
-                                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jNumDaAula, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 119, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -116,11 +164,11 @@ public class Exercicio_Criar extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jCursos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jNumDaAula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNovo)
@@ -141,6 +189,10 @@ public class Exercicio_Criar extends javax.swing.JFrame {
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnNovoActionPerformed
+
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        this.preencherCbCursos();
+    }//GEN-LAST:event_formWindowGainedFocus
 
     /**
      * @param args the command line arguments
@@ -180,9 +232,9 @@ public class Exercicio_Criar extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
     private javax.swing.JToggleButton btnNovo;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox jCursos;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JSpinner jSpinner1;
+    private javax.swing.JSpinner jNumDaAula;
     // End of variables declaration//GEN-END:variables
 }

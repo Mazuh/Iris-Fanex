@@ -32,41 +32,38 @@ import javax.swing.JOptionPane;
  */
 public class Exercicio_Escolha extends javax.swing.JFrame {
 
-    private static int ARG; // define o que será feita com a escolha...
+    private static int modo; // define o que será feita com a escolha...
     
-    public final static int ARG_VER = 1; // ... se é pra visualizar o escolhido...
-    public final static int ARG_CONTINUAR = 2; // ... ou prosseguir uma resolução
+    public final static int MODO_VER = 1; // ... se é pra visualizar o escolhido...
+    public final static int MODO_CONTINUAR = 2; // ... ou prosseguir uma resolução
     
     /**
      * Creates new form Exercicio_Responder_Escolha
      * @param objetivo
     */
     public Exercicio_Escolha(int objetivo){
-        Exercicio_Escolha.ARG = objetivo;
+        Exercicio_Escolha.modo = objetivo;
         
         this.setUndecorated(true); // oculta barra superior
         
         initComponents();
         
+        this.setResizable(false);
         this.setLocationRelativeTo(null); // centraliza
         this.getContentPane().setBackground(new Color(39,174,96)); // cor de fundo verde
-        
     }
 
     /*
     Preenche a combobox apenas com exercícios pertinentes à razão de existência desta janela.
     */
     private void preencherComboBox(){
-        System.out.println("preenchendo");
-        switch(Exercicio_Escolha.ARG){
-            case Exercicio_Escolha.ARG_VER:
+        switch(Exercicio_Escolha.modo){
+            case Exercicio_Escolha.MODO_VER:
                 // ...
-                System.out.println("ver");
                 break;
                 
-            case Exercicio_Escolha.ARG_CONTINUAR:
+            case Exercicio_Escolha.MODO_CONTINUAR:
                 // ...
-                System.out.println("cont");
                 break;
                 
             default:
@@ -187,7 +184,6 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
     }//GEN-LAST:event_formFocusGained
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
-        System.out.println("foco");
         preencherComboBox();
     }//GEN-LAST:event_formWindowGainedFocus
 
@@ -222,7 +218,7 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Exercicio_Escolha(Exercicio_Escolha.ARG).setVisible(true);
+                new Exercicio_Escolha(Exercicio_Escolha.modo).setVisible(true);
             }
         });
     }

@@ -23,7 +23,7 @@
  */
 package br.com.fanex.mazuh.janelas;
 
-import javax.swing.JLabel;
+import br.com.fanex.mazuh.edu.Exercicio;
 
 /**
  *
@@ -31,11 +31,37 @@ import javax.swing.JLabel;
  */
 public class Exercicio_Responder extends javax.swing.JFrame {
 
+    // exercício que pode estar sem respostas (novo) ou não (a continuar)
+    private static Exercicio exercicio;
+    // baseado nisso, no futuro será definido se será usado o metodo de alteração ou de criação
+    private static int modo;
+    
+    // códigos que o atributo 'modo' pode receber.
+    private final static int MODO_INICIAR = 1;
+    private final static int MODO_CONTINUAR = 2;
+    
     /**
      * Creates new form Exercicio_Responder
+     * @param modo
+     * @param exercicio
      */
-    public Exercicio_Responder() {
-        initComponents();   
+    
+    public Exercicio_Responder(int modo, Exercicio exercicio) {
+        Exercicio_Responder.modo = modo;
+
+        initComponents();
+        
+        // "converte" o modo int em modo ascii...
+        String modoEmASCII = modo == MODO_INICIAR ? "NOVO"
+                : modo == MODO_CONTINUAR ? "CONTINUAÇÃO" : "...";
+        
+        // ... e coloca isso no título.
+        this.setTitle("[" + modoEmASCII  + "]"
+                + exercicio.toString());
+        
+        // outras propriedades
+        this.setResizable(false);
+        this.setLocationRelativeTo(null);
     }
     
     /**
@@ -169,7 +195,7 @@ public class Exercicio_Responder extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Exercicio_Responder().setVisible(true);
+                new Exercicio_Responder(Exercicio_Responder.modo, Exercicio_Responder.exercicio).setVisible(true);
             }
         });
     }
