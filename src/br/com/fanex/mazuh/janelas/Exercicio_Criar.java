@@ -23,6 +23,9 @@
  */
 package br.com.fanex.mazuh.janelas;
 
+import br.com.fanex.mazuh.acesso.Sessao;
+import br.com.fanex.mazuh.edu.Curso;
+import br.com.fanex.mazuh.edu.Exercicio;
 import br.com.fanex.mazuh.jpa.CursoJpaController;
 import br.com.fanex.mazuh.jpa.DAO;
 import java.awt.Color;
@@ -49,6 +52,9 @@ public class Exercicio_Criar extends javax.swing.JFrame {
         
     }
     
+    /*
+    Verifica se há cursos no bd e, se houver, coloca-os na combobox.
+    */
     private void preencherCbCursos(){
         CursoJpaController cursosDAO = new CursoJpaController(DAO.getEntityManagerFactory());
         
@@ -68,11 +74,71 @@ public class Exercicio_Criar extends javax.swing.JFrame {
         
     }
     
-    private void criarFormDeResposta(){
-        
+    /*
+    Se os campos estiverem ok, um novo exercício "vazio" será criado
+    e enviado ao form seguinte via parâmetro.
+    */
+    private void irParaFormDeResposta(){
+        if (this.camposEstaoOk()){ // checagem
+            
+            // cria exercício novo
+            Exercicio exercicio = new Exercicio();
+            exercicio.setIdAluno(Sessao.usuario_logado());
+            exercicio.setIdCurso((Curso) jCursos.getSelectedItem());
+            exercicio.setNumAula((Integer) jNumDaAula.getValue());
+            exercicio.setQtdPerguntas(-1);
+            
+            // envia pro form seguinte
+            new Exercicio_Responder(Exercicio_Responder.MODO_INICIAR, exercicio)
+                    .setVisible(true);
+            this.dispose();
+            
+            
+        } else{ // se os campos estiverem inválidos
+            JOptionPane.showMessageDialog(null, 
+                    "Há algum campo inválido.\nChame seu instrutor!", 
+                    "ERRO",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
     
+    /*
+    Verifica se os campos são válidos. Return false se tiver algo errado.
+    */
     private boolean camposEstaoOk(){
+        // validação da combobox
+        Object curso = jCursos.getSelectedItem();
+        try {
+            if (curso.toString().equals("---")) // se o texto padrão, erro!
+                return false;
+            else // então é um objeto Curso
+                curso = (Curso) curso; // é quase certeza ser um Curso, mas...
+            
+        } catch (Exception e) {
+            // ...se não puder ser convertido em Curso, dispara erro
+            return false;
+        }
+        
+        
+        // validação do número da aula. Checagem de mínimo e máximo.
+        int valor;
+        
+        try{
+            valor = (Integer) jNumDaAula.getValue();
+        }catch(NumberFormatException e){
+            // se não for um número de verdade (?)
+            return false;
+        }
+        
+        // valor mínimo
+        if (valor < 1)
+            return false;
+        
+        // valor máximo
+        if (valor > ((Curso) curso).getQtdExercicios())
+            return false;
+        
+        // se nenhuma das validações disparou false, então logicamente é true.
         return true;
     }
     
@@ -186,10 +252,16 @@ public class Exercicio_Criar extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    /*
+    Botão que tentará terminar o processo de criação e avançará à próxima tela
+    */
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
-        // TODO add your handling code here:
+        this.irParaFormDeResposta();
     }//GEN-LAST:event_btnNovoActionPerformed
 
+    /*
+    Sempre que a janela ganhar foco, a combobox será atualizada com o que tiver no bd.
+    */
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         this.preencherCbCursos();
     }//GEN-LAST:event_formWindowGainedFocus

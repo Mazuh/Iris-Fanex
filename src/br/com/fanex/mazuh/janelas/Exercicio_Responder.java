@@ -37,8 +37,8 @@ public class Exercicio_Responder extends javax.swing.JFrame {
     private static int modo;
     
     // códigos que o atributo 'modo' pode receber.
-    private final static int MODO_INICIAR = 1;
-    private final static int MODO_CONTINUAR = 2;
+    public final static int MODO_INICIAR = 1;
+    public final static int MODO_CONTINUAR = 2;
     
     /**
      * Creates new form Exercicio_Responder
@@ -55,13 +55,16 @@ public class Exercicio_Responder extends javax.swing.JFrame {
         String modoEmASCII = modo == MODO_INICIAR ? "NOVO"
                 : modo == MODO_CONTINUAR ? "CONTINUAÇÃO" : "...";
         
-        // ... e coloca isso no título.
-        this.setTitle("[" + modoEmASCII  + "]"
-                + exercicio.toString());
+        // ... e coloca isso na barra de título.
+        this.setTitle("[" + modoEmASCII  + "] "
+                + "Exercício de Revisão de " + exercicio.getIdAluno().getNome());
         
         // outras propriedades
         this.setResizable(false);
         this.setLocationRelativeTo(null);
+        
+        // coloca um subtítulo bem bonito com as informações do exercício
+        jSubtitulo.setText(exercicio.toString());
     }
     
     /**
@@ -74,7 +77,7 @@ public class Exercicio_Responder extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        JSubtitulo = new javax.swing.JLabel();
+        jSubtitulo = new javax.swing.JLabel();
         txtRespostas = new java.awt.TextArea();
         btnEnviar = new javax.swing.JButton();
         btnSalvar = new javax.swing.JButton();
@@ -89,11 +92,11 @@ public class Exercicio_Responder extends javax.swing.JFrame {
         jLabel1.setText("Respondendo Exercício de Revisão...");
         jLabel1.setOpaque(true);
 
-        JSubtitulo.setBackground(new java.awt.Color(39, 174, 96));
-        JSubtitulo.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        JSubtitulo.setForeground(new java.awt.Color(255, 255, 255));
-        JSubtitulo.setText("NULL");
-        JSubtitulo.setOpaque(true);
+        jSubtitulo.setBackground(new java.awt.Color(39, 174, 96));
+        jSubtitulo.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jSubtitulo.setForeground(new java.awt.Color(255, 255, 255));
+        jSubtitulo.setText("NULL");
+        jSubtitulo.setOpaque(true);
 
         btnEnviar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/ok.gif"))); // NOI18N
         btnEnviar.setText("Terminei o exercício!");
@@ -123,7 +126,7 @@ public class Exercicio_Responder extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
                         .addComponent(btnVoltar))
-                    .addComponent(JSubtitulo)
+                    .addComponent(jSubtitulo)
                     .addComponent(txtRespostas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -143,7 +146,7 @@ public class Exercicio_Responder extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(btnVoltar))
                 .addGap(11, 11, 11)
-                .addComponent(JSubtitulo)
+                .addComponent(jSubtitulo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtRespostas, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(19, 19, 19)
@@ -201,12 +204,12 @@ public class Exercicio_Responder extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel JSubtitulo;
     private javax.swing.JButton btnDeletar;
     private javax.swing.JButton btnEnviar;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JButton btnVoltar;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jSubtitulo;
     private java.awt.TextArea txtRespostas;
     // End of variables declaration//GEN-END:variables
 }

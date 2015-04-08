@@ -68,7 +68,7 @@ public class Login extends javax.swing.JFrame {
                 // verifica sua hierarquia,
                 // abre a janela correspondente.
                 
-                switch ((Sessao.getUsuario().getIdHierarquia()).getNome()){
+                switch ((Sessao.usuario_logado().getIdHierarquia()).getNome()){
                     
                     case "aluno":
                         new Painel_Estudante().setVisible(true);

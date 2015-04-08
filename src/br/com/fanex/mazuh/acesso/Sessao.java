@@ -37,7 +37,7 @@ public class Sessao {
     /*
     Retorna o objeto global do usuário logado.
     */
-    public static Usuario getUsuario(){
+    public static Usuario usuario_logado(){
         return Sessao.usuario_logado;
     }
     

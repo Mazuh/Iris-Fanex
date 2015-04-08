@@ -31,7 +31,7 @@
                       <EmptySpace pref="76" max="32767" attributes="0"/>
                       <Component id="btnVoltar" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="JSubtitulo" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="jSubtitulo" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="txtRespostas" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
@@ -56,7 +56,7 @@
                   <Component id="btnVoltar" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
-              <Component id="JSubtitulo" min="-2" max="-2" attributes="0"/>
+              <Component id="jSubtitulo" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="txtRespostas" min="-2" pref="318" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
@@ -86,7 +86,7 @@
         <Property name="opaque" type="boolean" value="true"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="JSubtitulo">
+    <Component class="javax.swing.JLabel" name="jSubtitulo">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="60" green="ae" red="27" type="rgb"/>
