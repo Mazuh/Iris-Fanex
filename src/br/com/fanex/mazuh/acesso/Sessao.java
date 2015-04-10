@@ -93,7 +93,7 @@ public class Sessao {
     /*
     Refaz a query do usuário logado ao banco de dados.
     */
-    public void refresh(){
+    public static void refresh(){
         try{
             
             // refresh:

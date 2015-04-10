@@ -71,6 +71,11 @@ public class Hierarquia implements Serializable {
         this.id = id;
         this.nome = nome;
     }
+    
+    @Override
+    public String toString(){
+        return this.nome;
+    }
 
     public Integer getId() {
         return id;
@@ -117,9 +122,10 @@ public class Hierarquia implements Serializable {
         return true;
     }
 
+    /*
     @Override
     public String toString() {
         return "br.com.fanex.mazuh.Hierarquia[ id=" + id + " ]";
-    }
+    }*/
     
 }

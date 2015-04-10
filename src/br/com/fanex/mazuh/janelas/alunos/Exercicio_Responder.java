@@ -105,7 +105,7 @@ public class Exercicio_Responder extends javax.swing.JFrame {
             // escolhe qual método usar para persistir
             if (modo == MODO_INICIAR) {
                 exercicioDAO.create(exercicio);
-                JOptionPane.showConfirmDialog(null, "Exercício criado com sucesso!");
+                JOptionPane.showMessageDialog(null, "Exercício criado com sucesso!");
                 return true;
                 
             } else if (modo == MODO_CONTINUAR) {
@@ -290,14 +290,8 @@ public class Exercicio_Responder extends javax.swing.JFrame {
         exercicio.setRespostas(txtRespostas.getText());
         boolean salvou = persistirExercicio();
         
-        // avisa que deu tudo certo e sai!
+        // se deu tudo certo, tchau!
         if (salvou) {
-            
-            JOptionPane.showMessageDialog(null,
-                    "Exercício salvo com sucesso.\nClique em 'Continuar' em seu painel quando quiser voltar e finalizá-lo.",
-                    "TUDO OK!",
-                    JOptionPane.PLAIN_MESSAGE);
-            
             this.dispose(); // tchau!
         }
         

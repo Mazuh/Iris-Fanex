@@ -23,10 +23,13 @@
  */
 package br.com.fanex.mazuh.janelas.alunos;
 
+import br.com.fanex.mazuh.acesso.Hierarquia;
 import br.com.fanex.mazuh.acesso.Sessao;
+import br.com.fanex.mazuh.acesso.Usuario;
 import br.com.fanex.mazuh.edu.Curso;
 import br.com.fanex.mazuh.edu.Exercicio;
 import br.com.fanex.mazuh.jpa.CursoJpaController;
+import br.com.fanex.mazuh.jpa.HierarquiaJpaController;
 import java.awt.Color;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -52,24 +55,80 @@ public class Exercicio_Criar extends javax.swing.JFrame {
     }
     
     /*
-    Verifica se há cursos no bd e, se houver, coloca-os na combobox.
+    Verifica se há cursos e instrutores no bd e, se houver, coloca-os na combobox
+    para serem elegíveis pelo usuário.
     */
     private void preencherCbCursos(){
-        CursoJpaController cursosDAO = new CursoJpaController(Sessao.getEntityManagerFactory());
+        if (!podeFazerExercicio())
+            die("Parece que você tem exercícios demais!", "Ei!");
         
-        // verifica se há cursos
+        CursoJpaController cursosDAO = new CursoJpaController(Sessao.getEntityManagerFactory());
+        HierarquiaJpaController hierarquiasDAO = new HierarquiaJpaController(Sessao.getEntityManagerFactory());
+        
+        // verifica se há cursos e hierarquias
         if (cursosDAO.getCursoCount() <= 0)
             die("Não foram encontrados cursos no banco de dados!", "Ops...");
         
+        if (hierarquiasDAO.getHierarquiaCount() <= 0)
+            die("Servidor desconfigurado, não encontrou categoria de usuários.\n"
+                    + "Restaure o backup ou contate o suporte!", "Eita!");
+        
         // busca-os
         List cursos = cursosDAO.findCursoEntities();
+        List instrutores = hierarquiasDAO.findHierarquia(2).getUsuarioList(); // 2 é o id de instrutor (ver .sql de povoamento)
         
-        // preenche combobox a combobox com o que foi encontrado
+        // se a busca por id falhou, tentar a busca lenta de instrutores por nome
+        if (instrutores == null || instrutores.size() < 1 
+            || !((Usuario) instrutores.get(0)).getIdHierarquia().toString().equalsIgnoreCase("instrutor")){
+            
+            List hierarquias = hierarquiasDAO.findHierarquiaEntities();
+            for (int i = 0; i < hierarquias.size(); i++){
+                if (hierarquias.get(i).toString().equalsIgnoreCase("instrutor"))
+                    instrutores = ((Hierarquia) hierarquias.get(i)).getUsuarioList();
+            }
+            
+            // se no final ainda não houver instrutor encontrado, finalizar.
+            if (instrutores == null || instrutores.size() < 1
+                || !((Usuario) instrutores.get(0)).getIdHierarquia().toString().equalsIgnoreCase("instrutor"))
+                die("Tentou encontrar instrutores de várias formas, todas falharam.", 
+                    "Erro de configuração de servidor.");
+            else
+                System.err.println("A busca por instrutores se deu na forma lenta.");
+        }
+        
+        
+        // preenche as combobox com o que foi encontrado
         jCursos.removeAllItems();
         jCursos.addItem("---");
         for (int i = 0; i < cursos.size(); i++){
             jCursos.addItem(cursos.get(i));
         }
+        
+        jInstrutores.removeAllItems();
+        jInstrutores.addItem("---");
+        for (int i = 0; i < instrutores.size(); i++){
+            jInstrutores.addItem(instrutores.get(i));
+        }
+        
+    }
+    
+    /*
+    Verifica se o aluno pode começar novos exercícios.
+    Retorna false se ele tiver 3 ou mais exercícios incompletos.
+    
+    Pra identificar os incompletos, é capturada a ocorrência da string "não"
+    de "não enviado" no getSituacao() do exercício.
+    */
+    private boolean podeFazerExercicio(){
+        List<Exercicio> exercicios = Sessao.usuario_logado().getExercicioList1();
+        
+        int contIncompletos = 0;
+        for (int i = 0; i < exercicios.size(); i++){
+            if (exercicios.get(i).getSituacao().contains("Não"))
+                contIncompletos++;
+        }
+        
+        return contIncompletos < 3;
         
     }
     
@@ -85,6 +144,7 @@ public class Exercicio_Criar extends javax.swing.JFrame {
             exercicio.setIdAluno(Sessao.usuario_logado());
             exercicio.setIdCurso((Curso) jCursos.getSelectedItem());
             exercicio.setNumAula((Integer) jNumDaAula.getValue());
+            exercicio.setIdInstrutor((Usuario) jInstrutores.getSelectedItem());
             exercicio.setQtdPerguntas(-1);
             
             // envia pro form seguinte
@@ -105,19 +165,29 @@ public class Exercicio_Criar extends javax.swing.JFrame {
     Verifica se os campos são válidos. Return false se tiver algo errado.
     */
     private boolean camposEstaoOk(){
-        // validação da combobox
+        // validação da combobox de cursos
         Object curso = jCursos.getSelectedItem();
         try {
             if (curso.toString().equals("---")) // se o texto padrão, erro!
                 return false;
-            else // então é um objeto Curso
-                curso = (Curso) curso; // é quase certeza ser um Curso, mas...
+            else if(!(curso instanceof Curso)) // se não for da instância certa
+                return false;
             
-        } catch (Exception e) {
-            // ...se não puder ser convertido em Curso, dispara erro
+        } catch (Exception e){
             return false;
         }
         
+        // validação da combobox de instrutores
+        Object instrutor = jInstrutores.getSelectedItem();
+        try {
+            if (instrutor.toString().equals("---")) // se o texto padrão, erro!
+                return false;
+            else if(!(instrutor instanceof Usuario)) // se não for da instância certa
+                return false;
+            
+        } catch (Exception e){
+            return false;
+        }
         
         // validação do número da aula. Checagem de mínimo e máximo.
         int valor;
@@ -166,6 +236,8 @@ public class Exercicio_Criar extends javax.swing.JFrame {
         jNumDaAula = new javax.swing.JSpinner();
         btnNovo = new javax.swing.JToggleButton();
         btnCancelar = new javax.swing.JButton();
+        jInstrutores = new javax.swing.JComboBox();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
@@ -200,6 +272,12 @@ public class Exercicio_Criar extends javax.swing.JFrame {
             }
         });
 
+        jInstrutores.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "---" }));
+
+        jLabel3.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Enviar para qual instrutor(a):");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -208,19 +286,21 @@ public class Exercicio_Criar extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jCursos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnCancelar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnNovo))
+                    .addComponent(jInstrutores, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addGap(4, 4, 4)
-                                .addComponent(jNumDaAula, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 119, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnCancelar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnNovo)))
+                                .addComponent(jNumDaAula, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel3))
+                        .addGap(0, 135, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -230,11 +310,15 @@ public class Exercicio_Criar extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCursos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jNumDaAula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(jNumDaAula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jInstrutores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNovo)
                     .addComponent(btnCancelar))
@@ -304,8 +388,10 @@ public class Exercicio_Criar extends javax.swing.JFrame {
     private javax.swing.JButton btnCancelar;
     private javax.swing.JToggleButton btnNovo;
     private javax.swing.JComboBox jCursos;
+    private javax.swing.JComboBox jInstrutores;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JSpinner jNumDaAula;
     // End of variables declaration//GEN-END:variables
 }

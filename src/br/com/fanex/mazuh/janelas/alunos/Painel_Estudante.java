@@ -65,6 +65,13 @@ public class Painel_Estudante extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+            }
+        });
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
@@ -226,14 +233,22 @@ public class Painel_Estudante extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         JOptionPane.showMessageDialog(null, "Você saiu do sistema.\nAté logo!",
                 "SAIR",
-                JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.PLAIN_MESSAGE); // tchau!
         
         Sessao.sair();
         
-        this.dispose();
+        this.dispose(); // puff
         
-        new Login().setVisible(true);
+        new Login().setVisible(true); // oi, pessoa nova (ou a antiga frescando com o botão de logoff)!
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    /*
+    Sempre que essa janela surgir, a sessão será atualizada refazendo as
+    querys no banco.
+    */
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        Sessao.refresh();
+    }//GEN-LAST:event_formWindowGainedFocus
 
     /**
      * @param args the command line arguments

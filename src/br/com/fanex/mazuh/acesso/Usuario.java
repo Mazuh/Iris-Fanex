@@ -83,6 +83,11 @@ public class Usuario implements Serializable {
         this.nome = nome;
         this.senha = senha;
     }
+    
+    @Override
+    public String toString(){
+        return this.nome;
+    }
 
     public Integer getId() {
         return id;
@@ -154,9 +159,11 @@ public class Usuario implements Serializable {
         return true;
     }
 
+    /*
     @Override
     public String toString() {
         return "br.com.fanex.mazuh.Usuario[ id=" + id + " ]";
     }
+    */
     
 }

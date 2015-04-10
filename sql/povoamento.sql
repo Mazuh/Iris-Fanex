@@ -21,9 +21,7 @@ INSERT INTO usuarios(id, id_hierarquia, nome, senha)
 
 -- aluno de testes
 INSERT INTO usuarios(id, id_hierarquia, nome, senha)
-	VALUES(0, 3, 'Marcell', '1');
-
-	
+	VALUES(600, 3, 'Marcell', '1');
 	
 -- TABELA cursos ---------------
 INSERT INTO cursos(nome, qtd_exercicios, url_gabarito)
