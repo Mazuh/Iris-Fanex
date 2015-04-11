@@ -23,7 +23,11 @@
  */
 package br.com.fanex.mazuh.janelas.alunos;
 
+import br.com.fanex.mazuh.acesso.Sessao;
+import br.com.fanex.mazuh.edu.Exercicio;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
@@ -56,20 +60,171 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
     /*
     Preenche a combobox apenas com exercícios pertinentes à razão de existência desta janela.
     */
-    private void preencherComboBox(){
-        switch(Exercicio_Escolha.modo){
+    private void preencherTodasComboBox() {
+        
+        jExercicios.removeAllItems();
+        jExercicios.addItem("---");
+        
+        switch (Exercicio_Escolha.modo) {
+            
+            // escolha de disponíveis para read
             case Exercicio_Escolha.MODO_VER:
-                // ...
-                break;
                 
+                if (temExercicios()) {
+                    
+                    btnOK.setText("Ver!");
+                    preencherCbComTodosExercicios();
+                    
+                } else{ // não tem exercícios
+                    die("Nenhum exercício seu foi encontrado!\n"
+                            + "Se quiser iniciar um novo exercício, use o botão "
+                            + "'Novo exercício' do seu painel!",
+                            "Opa!");
+                }
+                
+                break;
+
+                
+            // escolha de disponíveis para update
             case Exercicio_Escolha.MODO_CONTINUAR:
-                // ...
+                
+                if (temExerciciosIncompletos()) {
+                    
+                    btnOK.setText("Continuar!");
+                    preencherCbComExerciciosIncompletos();
+                    
+                } else{ // não tem exercícios incompletos
+                    die("Parece que você não tem exercícios não enviados!\n"
+                            + "Se quiser iniciar um novo exercício, use o botão "
+                            + "'Novo exercício' do seu painel!",
+                            "Opa!");
+                }
+                
+                break;
+
+                
+            // hã?
+            default:
+                die("Erro no parâmetro de escolha.\n"
+                        + "Reporte os detalhes deste bug ao desenvolvedor.", "ERRO");
                 break;
                 
-            default:
-                die("Erro no parâmetro.", "ERRO");
-                break;
         }
+
+    }
+    
+    /*
+    Se os campos estiverem ok, avançada para o próximo form de resposta enviando
+    para lá o exercício incompleto.
+    */
+    private void irParaFormDeResposta(){
+        if (camposEstaoOk()){
+            
+            this.dispose(); // bye!
+            
+            new Exercicio_Responder(Exercicio_Responder.MODO_CONTINUAR, 
+                    (Exercicio) jExercicios.getSelectedItem()) // new
+                    .setVisible(true); // setvisible
+            
+        } else{ 
+            // erro
+            JOptionPane.showMessageDialog(null, 
+                    "Selecione algum exercício.", 
+                    "Calma aí, jovem!", 
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    /*
+    Se os campos estiverem ok, avançada para uma tela de visualização.
+    */
+    private void irParaFormDeVisualizacao(){
+        
+    }
+    
+    /*
+    Verifica se a combobox está selecionada com algo aceitável para clicar em OK.
+    Se sim, retorna true.
+    */
+    private boolean camposEstaoOk(){
+        // null pointer
+        if (jExercicios.getSelectedItem() == null)
+            return false;
+        
+        // não selecionado
+        if (jExercicios.getSelectedItem().toString().equals("---"))
+            return false;
+        
+        // ??? (tudo é possível rs)
+        if (!(jExercicios.getSelectedItem() instanceof Exercicio))
+            return false;
+        
+        return true; // se nada deu errado, então retorna true.
+    }
+    
+    /*
+    Um laço percorre a lista de exercícios preenchendo a combobox.
+    Não possui formas de proteção contra null pointer.
+    */
+    private void preencherCbComTodosExercicios(){
+        
+        for (int i = 0; i < getExercicios().size(); i++)
+            jExercicios.addItem(getExercicios().get(i));
+        
+    }
+    
+    /*
+    Retorna exercícios que o usuário aluno logado possui.
+    */
+    private List<Exercicio> getExercicios(){
+        return Sessao.usuario_logado().getExercicioList1();
+    }
+    
+    /*
+    Um laço percorre a lista de exercícios não enviados preenchendo a combobox.
+    Não possui formas de proteção contra null pointer.
+    */
+    private void preencherCbComExerciciosIncompletos(){
+        
+        for (int i = 0; i < getExerciciosIncompletos().size(); i++)
+            jExercicios.addItem(getExerciciosIncompletos().get(i));
+        
+    }
+    
+    /*
+    Retorna exercícios marcados como incompletos e disponíveis para update
+    do usuário aluno logado.
+    */
+    private List<Exercicio> getExerciciosIncompletos(){
+        // evita um possível futuro laço inútil nas linhas seguintes 
+        if (!temExercicios())
+            return null;
+        
+        // variável para armazenar os exercícios declarados 'não enviados'
+        List <Exercicio> exerciciosIncompletos = new ArrayList<Exercicio>();
+        // busca os tais exercícios 'não enviados'
+        for (int i = 0; i < getExercicios().size(); i++){
+            if (getExercicios().get(i).getSituacao().contains("Não"))
+                exerciciosIncompletos.add(getExercicios().get(i));
+        }
+        
+        return exerciciosIncompletos; // retorna o que foi armazenado (pode ser null)
+    }
+    
+    /*
+    Retorna true se a lista de exercícios 'não enviado's do usuário logado
+    existir e conter algo.
+    */
+    private boolean temExerciciosIncompletos(){
+        return (getExerciciosIncompletos() != null 
+                && getExerciciosIncompletos().size() > 0);
+    }
+    
+    /*
+    Retorna true se a lista de exercícios do usuário logado existir e conter algo.
+    */
+    private boolean temExercicios(){
+        return (getExercicios() != null && getExercicios().size() > 0);
     }
     
     /*
@@ -91,9 +246,9 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jComboBox1 = new javax.swing.JComboBox();
+        jExercicios = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
-        btnContinuar = new javax.swing.JButton();
+        btnOK = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -110,16 +265,16 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "---" }));
+        jExercicios.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "---" }));
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Escolha abaixo qual exercício de revisão deseja continuar:");
+        jLabel1.setText("Escolha o abaixo o Exercício de Revisão que você quer pegar:");
 
-        btnContinuar.setText("Continuar");
-        btnContinuar.addActionListener(new java.awt.event.ActionListener() {
+        btnOK.setText("OK");
+        btnOK.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnContinuarActionPerformed(evt);
+                btnOKActionPerformed(evt);
             }
         });
 
@@ -141,11 +296,11 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnCancelar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnContinuar))
+                        .addComponent(btnOK))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 75, Short.MAX_VALUE))
+                    .addComponent(jExercicios, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -154,10 +309,10 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jExercicios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnContinuar)
+                    .addComponent(btnOK)
                     .addComponent(btnCancelar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -175,16 +330,16 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
     /*
     Botão de continuar irá abrir o formulário de exercício já passando o obj escolhido por argumento.
     */
-    private void btnContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnContinuarActionPerformed
+    private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
+        irParaFormDeResposta();
+    }//GEN-LAST:event_btnOKActionPerformed
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
         
     }//GEN-LAST:event_formFocusGained
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
-        preencherComboBox();
+        preencherTodasComboBox();
     }//GEN-LAST:event_formWindowGainedFocus
 
     /**
@@ -225,8 +380,8 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
-    private javax.swing.JButton btnContinuar;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JButton btnOK;
+    private javax.swing.JComboBox jExercicios;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
