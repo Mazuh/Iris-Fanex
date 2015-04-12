@@ -96,6 +96,29 @@ public class Exercicio_Responder extends javax.swing.JFrame {
     }
     
     /*
+    Coloca uma data no exercício e o salva com this.persistirExercicio().
+    Pode exibir mensagens de erro caso uma falha aconteça.
+    */
+    private void enviarExercicio(){
+        exercicio.setRespostas(txtRespostas.getText());
+        exercicio.setDtEnvio(Sessao.getDataAtual());
+        
+        if (persistirExercicio()){
+            
+            this.dispose();
+            JOptionPane.showMessageDialog(null, 
+                    "Enviado para instrutor(a) " + 
+                            exercicio.getIdInstrutor().toString() + "!");
+            
+        } else{
+            
+            mostrarErro("Falha ao tentar enviar exercício.");
+            exercicio.setDtEnvio("00/00/00");
+            
+        }
+    }
+    
+    /*
     Irá persistir o objeto lógico Exercicio no banco de dados.
     Isso pode ocorrer por edição ou por criação, algo que o método irá escolher.
     */
@@ -165,6 +188,11 @@ public class Exercicio_Responder extends javax.swing.JFrame {
 
         btnEnviar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/ok.gif"))); // NOI18N
         btnEnviar.setText("Terminei o exercício!");
+        btnEnviar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEnviarActionPerformed(evt);
+            }
+        });
 
         btnSalvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/salvar.gif"))); // NOI18N
         btnSalvar.setText("Salvar exercício para terminar depois");
@@ -296,6 +324,21 @@ public class Exercicio_Responder extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_btnSalvarActionPerformed
+
+    /*
+    Pergunta se quer mesmo enviar (caixa de diálogo).
+    Se o usuário optar por sim, assim será feito.
+    */
+    private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
+        int resposta = JOptionPane.showConfirmDialog(null,
+                "Tem certeza de que deseja enviar este exercício ao instrutor?\n"
+                + "Você não poderá modificá-lo depois!");
+        
+        if (resposta == JOptionPane.OK_OPTION){
+            enviarExercicio();
+        }
+        
+    }//GEN-LAST:event_btnEnviarActionPerformed
 
     /**
      * @param args the command line arguments

@@ -24,6 +24,7 @@
 package br.com.fanex.mazuh.acesso;
 
 import br.com.fanex.mazuh.jpa.UsuarioJpaController;
+import java.util.Calendar;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.swing.JOptionPane;
@@ -141,7 +142,42 @@ public class Sessao {
     public static void sair(){
         Sessao.usuario_logado = null;
     }
-    
+  
+    /*
+    Retorna string da data atual no formato DD/MM/YY
+    Pode retornar string "dataerro" caso uma exceção inesperada seja disparada.
+    */
+    public static String getDataAtual() {
+
+        String data = "";
+        
+        try {
+            // pega instância do calendário atual
+            Calendar calendario = Calendar.getInstance();
+
+            // tratamento dia do mês: formato DD
+            int numDia = calendario.get(Calendar.DAY_OF_MONTH);
+            data += ((numDia > 9) ? (numDia) : ("0" + numDia)) + "/";
+
+            // tratamento mês: formato MM
+            int numMes = calendario.get(Calendar.MONTH);
+            data += ((numMes > 9) ? (numMes) : ("0" + numMes)) + "/";
+
+            // tratamento ano: pegar dois últimos caracteres apenas (YY).
+            String strAno = String.valueOf(calendario.get(Calendar.YEAR));
+            data += String.valueOf(strAno.charAt(strAno.length() - 2)
+                    + String.valueOf(strAno.charAt(strAno.length() - 1)));
+            
+        } catch (Exception e) {
+            
+            data = "dataerro";
+            
+        }
+
+        return data;
+        
+    }
+  
     /*
     Pega o controlador do objeto.
     */
