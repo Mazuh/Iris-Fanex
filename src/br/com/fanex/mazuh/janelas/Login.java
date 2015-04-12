@@ -84,17 +84,20 @@ public class Login extends javax.swing.JFrame {
                         break;
                         
                     default:
-                        System.err.println("Hierarquia não encontrada.");
-                        System.exit(1); // Não pode avançar! A mensagem bonitinha é só pra usuários altorizados!
+                        
+                        JOptionPane.showMessageDialog(null,
+                                "Erro no parâmetro de hierarquia.\n"
+                                    + "Comunique ao desenvolvedor!",
+                                "ERRO FATAL",
+                                JOptionPane.ERROR_MESSAGE);
+                        
+                        System.exit(1); // Não pode avançar! A mensagem bonitinha é só pra usuários autorizados!
                         break;
+                        
                 }
                 
-                // Fecha a tela de login e exibe uma mensagem bonitinha. =D
+                // Fecha a tela de login
                 this.dispose();
-                JOptionPane.showMessageDialog(null,
-                        "Olá! ;)\nVocê entrou no sistema Iris.",
-                        "BEM-VINDO",
-                        JOptionPane.PLAIN_MESSAGE);
                 
             } else{
                 // Usuário ou senha não encontrados no banco.

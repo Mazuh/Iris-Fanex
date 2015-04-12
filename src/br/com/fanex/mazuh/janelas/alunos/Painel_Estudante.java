@@ -114,7 +114,7 @@ public class Painel_Estudante extends javax.swing.JFrame {
         });
 
         btnPreferencias.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/usuario.gif"))); // NOI18N
-        btnPreferencias.setText("Preferências");
+        btnPreferencias.setText("Mudar nome/senha");
         btnPreferencias.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btnPreferencias.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

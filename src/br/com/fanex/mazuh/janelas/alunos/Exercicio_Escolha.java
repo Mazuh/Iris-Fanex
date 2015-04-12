@@ -48,10 +48,9 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
     public Exercicio_Escolha(int objetivo){
         Exercicio_Escolha.modo = objetivo;
         
-        this.setUndecorated(true); // oculta barra superior
-        
         initComponents();
         
+        this.setTitle("Seleção de Exercício");
         this.setResizable(false);
         this.setLocationRelativeTo(null); // centraliza
         this.getContentPane().setBackground(new Color(39,174,96)); // cor de fundo verde
@@ -251,7 +250,7 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
         btnOK = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -299,7 +298,7 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
                         .addComponent(btnOK))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addGap(0, 75, Short.MAX_VALUE))
+                        .addGap(0, 236, Short.MAX_VALUE))
                     .addComponent(jExercicios, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );

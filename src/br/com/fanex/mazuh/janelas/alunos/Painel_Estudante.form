@@ -161,7 +161,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/br/com/fanex/mazuh/janelas/imgs/icon/usuario.gif"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Prefer&#xea;ncias"/>
+        <Property name="text" type="java.lang.String" value="Mudar nome/senha"/>
         <Property name="horizontalAlignment" type="int" value="2"/>
       </Properties>
       <Events>
