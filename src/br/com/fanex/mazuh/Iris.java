@@ -23,9 +23,7 @@
  */
 package br.com.fanex.mazuh;
 
-import br.com.fanex.mazuh.acesso.Sessao;
-import br.com.fanex.mazuh.janelas.Login;
-import br.com.fanex.mazuh.jpa.UsuarioJpaController;
+import br.com.fanex.mazuh.janelas.SplashScreen;
 
 /**
  *
@@ -34,18 +32,11 @@ import br.com.fanex.mazuh.jpa.UsuarioJpaController;
 public class Iris {
 
     /*
-    Classe principal.
+    Classe principal. Apenas inicializa o sistema todo.
     */
     public static void main(String[] args) {
         
-        // A primeira conexão com o banco de dados é lenta.
-        // O objeto abaixo serve pra realizar esse lerdo processo antes da aplicação estar visível ao user.
-        UsuarioJpaController foo = new UsuarioJpaController(Sessao.getEntityManagerFactory());
-        foo.findUsuario(0);
-        foo = null; // manda o objeto para o garbage collector
-        
-        // Inicia a janela de login.
-        new Login().setVisible(true);
+        new SplashScreen().setVisible(true);
         
     }
     
