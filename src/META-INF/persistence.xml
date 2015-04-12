@@ -11,6 +11,7 @@
       <property name="javax.persistence.jdbc.password" value="echoecho"/>
       <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
       <property name="javax.persistence.jdbc.user" value="postgres"/>
+      <property name="eclipselink.cache.shared.default" value="false"/>
     </properties>
   </persistence-unit>
 </persistence>

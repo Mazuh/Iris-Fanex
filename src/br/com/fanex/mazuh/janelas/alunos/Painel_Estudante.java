@@ -61,7 +61,7 @@ public class Painel_Estudante extends javax.swing.JFrame {
         jButton6 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jButton8 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnLogoff = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -136,12 +136,12 @@ public class Painel_Estudante extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/janela.gif"))); // NOI18N
-        jButton3.setText("Sair do sistema Iris");
-        jButton3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnLogoff.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/janela.gif"))); // NOI18N
+        btnLogoff.setText("Sair do sistema Iris");
+        btnLogoff.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnLogoff.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnLogoffActionPerformed(evt);
             }
         });
 
@@ -166,7 +166,7 @@ public class Painel_Estudante extends javax.swing.JFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(btnLogoff, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -191,7 +191,7 @@ public class Painel_Estudante extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnVer)
-                    .addComponent(jButton3))
+                    .addComponent(btnLogoff))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
@@ -230,7 +230,7 @@ public class Painel_Estudante extends javax.swing.JFrame {
     /*
     Clicar aqui provoca logoff e reexibição da tela de Login.
     */
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnLogoffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoffActionPerformed
         JOptionPane.showMessageDialog(null, "Você saiu do sistema.\nAté logo!",
                 "SAIR",
                 JOptionPane.PLAIN_MESSAGE); // tchau!
@@ -240,7 +240,7 @@ public class Painel_Estudante extends javax.swing.JFrame {
         this.dispose(); // puff
         
         new Login().setVisible(true); // oi, pessoa nova (ou a antiga frescando com o botão de logoff)!
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnLogoffActionPerformed
 
     /*
     Sempre que essa janela surgir, a sessão será atualizada refazendo as
@@ -287,9 +287,9 @@ public class Painel_Estudante extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnContinuar;
+    private javax.swing.JButton btnLogoff;
     private javax.swing.JButton btnNovoExercicio;
     private javax.swing.JButton btnVer;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
