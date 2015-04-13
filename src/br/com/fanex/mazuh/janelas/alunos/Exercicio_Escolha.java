@@ -138,7 +138,20 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
     Se os campos estiverem ok, avançada para uma tela de visualização.
     */
     private void irParaFormDeVisualizacao(){
-        
+        if (camposEstaoOk()){
+            
+            this.dispose(); // bye!
+            
+            new Exercicio_Ver((Exercicio) jExercicios.getSelectedItem()) // new...
+                    .setVisible(true); // ...setvisible!
+            
+        } else{ 
+            // erro
+            JOptionPane.showMessageDialog(null, 
+                    "Selecione algum exercício.", 
+                    "Calma aí, jovem!", 
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     /*
@@ -245,6 +258,7 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollBar1 = new javax.swing.JScrollBar();
         jExercicios = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         btnOK = new javax.swing.JButton();
@@ -330,7 +344,11 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
     Botão de continuar irá abrir o formulário de exercício já passando o obj escolhido por argumento.
     */
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
-        irParaFormDeResposta();
+        if (modo == MODO_CONTINUAR) // continuar a responder
+            irParaFormDeResposta();
+        
+        else if (modo == MODO_VER) // apenas visualizar
+            irParaFormDeVisualizacao();
     }//GEN-LAST:event_btnOKActionPerformed
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
@@ -382,5 +400,6 @@ public class Exercicio_Escolha extends javax.swing.JFrame {
     private javax.swing.JButton btnOK;
     private javax.swing.JComboBox jExercicios;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollBar jScrollBar1;
     // End of variables declaration//GEN-END:variables
 }
