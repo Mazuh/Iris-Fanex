@@ -189,6 +189,7 @@
           <Image iconType="3" name="/br/com/fanex/mazuh/janelas/imgs/icon/discutir.gif"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Chamar instrutor"/>
+        <Property name="enabled" type="boolean" value="false"/>
         <Property name="horizontalAlignment" type="int" value="2"/>
       </Properties>
       <Events>

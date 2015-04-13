@@ -130,6 +130,7 @@ public class Painel_Estudante extends javax.swing.JFrame {
 
         btnCall.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/discutir.gif"))); // NOI18N
         btnCall.setText("Chamar instrutor");
+        btnCall.setEnabled(false);
         btnCall.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btnCall.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -225,7 +226,7 @@ public class Painel_Estudante extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCallActionPerformed
 
     private void btnPreferenciasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreferenciasActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_btnPreferenciasActionPerformed
 
     /*
