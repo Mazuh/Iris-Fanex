@@ -25,6 +25,7 @@ package br.com.fanex.mazuh.janelas;
 
 import br.com.fanex.mazuh.janelas.alunos.Painel_Estudante;
 import br.com.fanex.mazuh.acesso.Sessao;
+import br.com.fanex.mazuh.janelas.instrutores.Painel_Instrutor;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 
@@ -76,7 +77,7 @@ public class Login extends javax.swing.JFrame {
                         break;
                     
                     case "instrutor":
-                        // FALTA IMPLEMENTAR
+                        new Painel_Instrutor().setVisible(true);
                         break;
                     
                     case "admin":
