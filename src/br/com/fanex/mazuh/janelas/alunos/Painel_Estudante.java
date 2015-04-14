@@ -26,6 +26,7 @@ package br.com.fanex.mazuh.janelas.alunos;
 
 import br.com.fanex.mazuh.acesso.Sessao;
 import br.com.fanex.mazuh.janelas.Login;
+import br.com.fanex.mazuh.janelas.Usuario_Preferencias;
 import javax.swing.JOptionPane;
 
 /**
@@ -225,8 +226,11 @@ public class Painel_Estudante extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCallActionPerformed
 
+    /*
+    Abre a janela de preferências pra alteração de dados do usuário logado.
+    */ 
     private void btnPreferenciasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreferenciasActionPerformed
-        
+        new Usuario_Preferencias(Sessao.usuario_logado()).setVisible(true);
     }//GEN-LAST:event_btnPreferenciasActionPerformed
 
     /*

@@ -56,38 +56,84 @@ public class Usuario_Preferencias extends javax.swing.JFrame {
         // preenche jcomponents
         jID.setText(String.valueOf(user.getId()));
         JHierarquia.setText(user.getIdHierarquia().getNome().toUpperCase());
-        jNome.setName(user.getNome());
+        jNome.setText(user.getNome());
     }
     
+    /*
+    Tenta fazer as possíveis alterações solicitadas e salvá-las via DAO.
+    */
+    private boolean persistirAtributoUsuario(){
+        // tenta persistir
+        try{
+            
+            usuarioDAO.edit(user);
+            return true;
+            
+        } catch(Exception e){
+            return false;
+        }
+        
+    }
+    
+    /*
+    Verifica se o campo obrigatório de senha foi preenchido corretamente.
+    
+    SEGURANÇA:
+    Esta função deve ser chamada numa condicional do método de persistẽncia!
+    */
     private boolean acessoAutorizado(){
-        return String.valueOf(JSenha.getPassword()).equals(user.getSenha());
+        return String.valueOf(jSenha.getPassword()).equals(user.getSenha());
     }
     
-    private void alterarNome(){
+    /*
+    Tenta alterar o nome do usuário local se os campos assim indicarem.
+    Retorna true se a alteração tiver ocorrido.
+    */
+    private boolean execAlteracaoDeNome(){
         String novoNome = jNome.getText();
         
-        if (novoNome.equals("")) // se estiver vazio, restaura padrão
+        if (novoNome.equals("")){ // se estiver vazio, restaura padrão
             user.setNome(String.valueOf(user.getId()));
-        else // se não, que a alteração seja feita
+            return true;
+        }else if (!novoNome.equals(user.getNome())){ // se estiver diferente do atual, modifique
             user.setNome(novoNome);
+            return true; 
+        } else{ // se não, deixa quieto. Ele nem solicitou alteração: nem mexeu no campo. 
+            return false;
+        }
         
     }
     
-    private void alterarSenha(){
+    /*
+    Tenta alterar a senha do usuário local se os campos assim indicarem.
+    Retorna true se a alteração tiver ocorrido.
+    Pode exibir caixas de diálogo de erro.
+    */
+    private boolean execAlteracaoDeSenha(){
         String senha1 = String.valueOf(jNovaSenha.getPassword());
         String senha2 = String.valueOf(jNovaSenhaREP.getPassword());
         
         if (!senha1.equals("")) {
             
-            if (senha1.equals(senha2))
+            // campo não está em branco, modificação requisitada!
+            if (senha1.equals(senha2)){
                 user.setSenha(senha1);
-            else
+                return true;
+            }else{
                 mostrarErro("A nova senha e sua repetição não estão iguais!");
+                return false;
+            }
             
+        } else{
+            // nem quis alterar nada.
+            return false;
         }
         
     }
     
+    /*
+    Apenas exibe uma caixa de diálogo de erro. Função auxiliar.
+    */
     private void mostrarErro(String msg){
         
         JOptionPane.showMessageDialog(null, 
@@ -117,7 +163,7 @@ public class Usuario_Preferencias extends javax.swing.JFrame {
         jNovaSenha = new javax.swing.JPasswordField();
         jNovaSenhaREP = new javax.swing.JPasswordField();
         jLabel7 = new javax.swing.JLabel();
-        JSenha = new javax.swing.JPasswordField();
+        jSenha = new javax.swing.JPasswordField();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         JHierarquia = new javax.swing.JTextField();
@@ -125,10 +171,10 @@ public class Usuario_Preferencias extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnSalvar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
@@ -161,7 +207,6 @@ public class Usuario_Preferencias extends javax.swing.JFrame {
         jLabel5.setOpaque(true);
 
         jID.setEditable(false);
-        jID.setEnabled(false);
 
         jLabel6.setText("Nova senha:");
 
@@ -172,7 +217,6 @@ public class Usuario_Preferencias extends javax.swing.JFrame {
         jLabel9.setText("Tipo:");
 
         JHierarquia.setEditable(false);
-        JHierarquia.setEnabled(false);
         JHierarquia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JHierarquiaActionPerformed(evt);
@@ -190,9 +234,19 @@ public class Usuario_Preferencias extends javax.swing.JFrame {
         jLabel13.setForeground(new java.awt.Color(102, 102, 102));
         jLabel13.setText("(Se não quiser mudar, deixe isto quieto)");
 
-        jButton1.setText("Salvar alterações");
+        btnSalvar.setText("Salvar alterações");
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Cancelar");
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -226,7 +280,7 @@ public class Usuario_Preferencias extends javax.swing.JFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(jNovaSenhaREP)
                                 .addComponent(jNovaSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(JSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12)
                     .addComponent(jLabel13)
                     .addComponent(jLabel5)
@@ -234,9 +288,9 @@ public class Usuario_Preferencias extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(btnCancelar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(btnSalvar)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -277,11 +331,11 @@ public class Usuario_Preferencias extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(JSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(btnSalvar)
+                    .addComponent(btnCancelar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -289,8 +343,93 @@ public class Usuario_Preferencias extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void JHierarquiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JHierarquiaActionPerformed
-        // TODO add your handling code here:
+        System.out.println("Deixa esse campo quieto, usuário.\n"
+                + "Ele não vai mudar...");
     }//GEN-LAST:event_JHierarquiaActionPerformed
+
+    
+    /*
+    Se algo tiver sido solicitado para modificação, retorna uma mensagem de confirmação.
+    Se houver algum erro no uso do DAO, um erro é exibido.
+    
+    Independente do que aconteça, este método irá fechar a janela.
+    */
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        final String MSG_NORMAL = "Nenhuma alteração foi realizada.";
+        final String MSG_ALTERACAO = "Alteração(ões) realizada(s):\n";
+        final String MSG_ERRO = "Erro ao tentar persistir alterações no banco de dados.";
+        final String MSG_ERRO_SEGURANCA = "O campo obrigatório de senha atual está incorreto!";
+        
+        String msg = MSG_NORMAL;
+        
+        if (acessoAutorizado()) { // Se a senha atual digitada estiver certa, então faça alterações
+
+            // nome
+            if (execAlteracaoDeNome()) {
+
+                if (msg.equals(MSG_NORMAL))
+                    msg = MSG_ALTERACAO;
+
+                msg += "Nome do usuário;\n";
+
+            }
+
+            // senha
+            if (execAlteracaoDeSenha()) {
+
+                if (msg.equals(MSG_NORMAL))
+                    msg = MSG_ALTERACAO;
+
+                msg += "Senha de acesso;\n";
+
+            }
+
+            if (!persistirAtributoUsuario()) // tenta persistir. Se não conseguir
+                msg = MSG_ERRO; // coloca mensagem de erro.
+            
+        } else { // (acesso não autorizado)
+            
+            // Se a senha atual estiver errada, coloca msg de erro.
+            msg = MSG_ERRO_SEGURANCA;
+
+        }
+
+
+        // exibe uma caixa de diálogo cujos elementos irão variar bastante.
+        JOptionPane.showMessageDialog(
+                
+                null,
+                
+                // corpo da mensagem
+                msg,
+                
+                // título da caixa de diálogo
+                msg.equals(MSG_ERRO) || msg.equals(MSG_ERRO_SEGURANCA) ? // se a msg for de erro
+                        "ERRO" // o título será de erro
+                        : "Configurando preferências...", // se não, título amigável 
+                
+                // ícone da caixa de diálogo
+                msg.equals(MSG_NORMAL) ? // se a msg for normal
+                        JOptionPane.PLAIN_MESSAGE // então deixe sem ícone
+                        : (msg.equals(MSG_ERRO) || msg.equals(MSG_ERRO_SEGURANCA) ? // se não: ela é de erro?
+                                JOptionPane.ERROR_MESSAGE // então exiba um ícone de erro
+                                : JOptionPane.INFORMATION_MESSAGE) // se não, use o ícone de informação  
+        
+        ); // fim do showMessageDialog().
+        
+        this.dispose(); // tchau!
+        
+    }//GEN-LAST:event_btnSalvarActionPerformed
+
+    /*
+    Informa que o processo foi cancelado e fecha a janela.
+    */
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        JOptionPane.showMessageDialog(null, "Nenhuma modificação foi feita.",
+                "Cancelado", JOptionPane.PLAIN_MESSAGE);
+        
+        this.dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -330,9 +469,8 @@ public class Usuario_Preferencias extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField JHierarquia;
-    private javax.swing.JPasswordField JSenha;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnSalvar;
     private javax.swing.JTextField jID;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -350,5 +488,6 @@ public class Usuario_Preferencias extends javax.swing.JFrame {
     private javax.swing.JTextField jNome;
     private javax.swing.JPasswordField jNovaSenha;
     private javax.swing.JPasswordField jNovaSenhaREP;
+    private javax.swing.JPasswordField jSenha;
     // End of variables declaration//GEN-END:variables
 }
