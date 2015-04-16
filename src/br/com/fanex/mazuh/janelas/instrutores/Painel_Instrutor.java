@@ -126,8 +126,8 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         btnBuscarExercicioPorID = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
-        jButton6 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
+        btnPreferencias = new javax.swing.JButton();
+        btnContato = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         btnLogoff = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -198,9 +198,19 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         jLabel6.setText("SUPORTE E CONFIGURAÇÕES");
         jLabel6.setOpaque(true);
 
-        jButton6.setText("Alterar nome/senha");
+        btnPreferencias.setText("Alterar nome/senha");
+        btnPreferencias.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPreferenciasActionPerformed(evt);
+            }
+        });
 
-        jButton8.setText("Fazer contato com desenvolvedor");
+        btnContato.setText("Fazer contato com desenvolvedor");
+        btnContato.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnContatoActionPerformed(evt);
+            }
+        });
 
         jButton9.setText("Pedidos p/ imprimir");
         jButton9.setEnabled(false);
@@ -263,7 +273,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
 
         jLabel7.setText("Páginas:");
 
-        jLabel3.setText("Você tem 0 exercício(s) para corrigir.");
+        jLabel3.setText(":: Você tem 0 exercício(s) para corrigir.");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -303,8 +313,8 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnPreferencias, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnContato, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnLogoff, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 759, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -324,12 +334,12 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton3)
                     .addComponent(jButton2)
-                    .addComponent(jButton6))
+                    .addComponent(btnPreferencias))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBuscarAlunoPorID)
                     .addComponent(btnBuscarExercicioPorID)
-                    .addComponent(jButton8))
+                    .addComponent(btnContato))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAlunoRecuperarSenhaPadrao)
@@ -456,6 +466,23 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnAlunoRecuperarSenhaPadraoActionPerformed
 
+    /*
+    Exibe uma caixa de diálogo com dados do desenvolvedor para contato.
+    */
+    private void btnContatoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContatoActionPerformed
+        JOptionPane.showMessageDialog(null, "\"Mazuh\"\n"
+                + "Marcell Guilherme\n"
+                + "marcell-mz@hotmail.com\n\n"
+                + "Reporte bugs, dê sugestões e peça suporte!");
+    }//GEN-LAST:event_btnContatoActionPerformed
+
+    /*
+    Abre a tela de preferências usando o usuário logado.
+    */
+    private void btnPreferenciasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreferenciasActionPerformed
+        new Usuario_Preferencias(Sessao.usuario_logado()).setVisible(true);
+    }//GEN-LAST:event_btnPreferenciasActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -496,13 +523,13 @@ public class Painel_Instrutor extends javax.swing.JFrame {
     private javax.swing.JButton btnAtualizarExerciciosIncompletos;
     private javax.swing.JButton btnBuscarAlunoPorID;
     private javax.swing.JButton btnBuscarExercicioPorID;
+    private javax.swing.JButton btnContato;
     private javax.swing.JButton btnLogoff;
+    private javax.swing.JButton btnPreferencias;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

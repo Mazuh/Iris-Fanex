@@ -60,8 +60,8 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="jLabel6" max="32767" attributes="0"/>
-                                  <Component id="jButton6" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="jButton8" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="btnPreferencias" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="btnContato" alignment="0" max="32767" attributes="0"/>
                                   <Component id="btnLogoff" alignment="0" min="-2" pref="293" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -89,13 +89,13 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButton3" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton6" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnPreferencias" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnBuscarAlunoPorID" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnBuscarExercicioPorID" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton8" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnContato" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -238,15 +238,21 @@
         <Property name="opaque" type="boolean" value="true"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton6">
+    <Component class="javax.swing.JButton" name="btnPreferencias">
       <Properties>
         <Property name="text" type="java.lang.String" value="Alterar nome/senha"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPreferenciasActionPerformed"/>
+      </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton8">
+    <Component class="javax.swing.JButton" name="btnContato">
       <Properties>
         <Property name="text" type="java.lang.String" value="Fazer contato com desenvolvedor"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnContatoActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButton9">
       <Properties>
@@ -344,7 +350,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Voc&#xea; tem 0 exerc&#xed;cio(s) para corrigir."/>
+        <Property name="text" type="java.lang.String" value=":: Voc&#xea; tem 0 exerc&#xed;cio(s) para corrigir."/>
       </Properties>
     </Component>
   </SubComponents>
