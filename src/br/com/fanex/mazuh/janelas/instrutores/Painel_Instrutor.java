@@ -24,18 +24,67 @@
 package br.com.fanex.mazuh.janelas.instrutores;
 
 import br.com.fanex.mazuh.acesso.Sessao;
+import br.com.fanex.mazuh.acesso.Usuario;
+import br.com.fanex.mazuh.janelas.Usuario_Preferencias;
+import br.com.fanex.mazuh.jpa.UsuarioJpaController;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author mazuh
  */
 public class Painel_Instrutor extends javax.swing.JFrame {
-
+    
     /**
      * Creates new form Painel_Instrutor
      */
     public Painel_Instrutor() {
         initComponents();
+    }
+    
+    private int inputValidoID(){
+        int id = -1; // variável para armazenar o ID que o usuário irá digitar.
+        
+        // caixa de diálogo pra entrada de dados em texto.
+        String entrada = JOptionPane.showInputDialog(null,
+                "Digite o ID (código numérico) válido:");
+        
+        // botão de cancelar: retorna sinal inválido.
+        if (entrada == null)
+            return -1;
+        
+        // botão de ok: bloco de try-catch-finally para mais verificações.
+        try {
+           
+            // tenta converter pra inteiro
+            id = Integer.valueOf(entrada);
+            
+        } catch (NumberFormatException e) {
+            
+            // erro?
+            id = -1;
+            
+        } finally {
+            
+            if (id > 0){
+                
+                return id;
+            
+            } else{
+                
+                JOptionPane.showMessageDialog(
+                    null,
+                    "Calma aí, fera!\n"
+                            + "Por favor, apenas um código numérico decimal\n"
+                            + "que pertencer ao conjunto dos inteiros\n"
+                            + "maiores que zero e menores que "
+                            + Integer.MAX_VALUE + ".",
+                   "Ops...",
+                    JOptionPane.ERROR_MESSAGE);
+                
+                return -1;
+            }
+        }
     }
 
     /**
@@ -50,7 +99,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        btnBuscarAlunoPorID = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         btnAtualizarExerciciosIncompletos = new javax.swing.JButton();
@@ -82,7 +131,12 @@ public class Painel_Instrutor extends javax.swing.JFrame {
 
         jButton3.setText("Listar todos");
 
-        jButton5.setText("Buscar por ID");
+        btnBuscarAlunoPorID.setText("Buscar por ID");
+        btnBuscarAlunoPorID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarAlunoPorIDActionPerformed(evt);
+            }
+        });
 
         jButton7.setText("Cadastrar");
 
@@ -186,7 +240,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jButton7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnBuscarAlunoPorID, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -220,7 +274,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                     .addComponent(jButton6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton5)
+                    .addComponent(btnBuscarAlunoPorID)
                     .addComponent(jButton4)
                     .addComponent(jButton8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -245,6 +299,28 @@ public class Painel_Instrutor extends javax.swing.JFrame {
             Sessao.sair();
             this.dispose();
     }//GEN-LAST:event_btnLogoffActionPerformed
+
+    private void btnBuscarAlunoPorIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarAlunoPorIDActionPerformed
+        String msg = null;
+        
+        try{
+            UsuarioJpaController usuarioDAO = new UsuarioJpaController(Sessao.getEntityManagerFactory());
+            Usuario aluno = usuarioDAO.findUsuario(inputValidoID());
+            
+            if (aluno.getIdHierarquia().getNome().equalsIgnoreCase("aluno"))
+                new Usuario_Preferencias(aluno).setVisible(true);
+            else
+                msg = "Parece que o usuário não é um aluno.\nMeça suas buscas!";
+            
+        } catch(Exception e){
+            msg = "Não foi possível buscar o aluno.";
+        }
+        
+        if (msg != null){
+            JOptionPane.showMessageDialog(null, msg, "ERRO", JOptionPane.ERROR_MESSAGE);
+        }
+        
+    }//GEN-LAST:event_btnBuscarAlunoPorIDActionPerformed
 
     /**
      * @param args the command line arguments
@@ -283,11 +359,11 @@ public class Painel_Instrutor extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtualizarExerciciosIncompletos;
+    private javax.swing.JButton btnBuscarAlunoPorID;
     private javax.swing.JButton btnLogoff;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
