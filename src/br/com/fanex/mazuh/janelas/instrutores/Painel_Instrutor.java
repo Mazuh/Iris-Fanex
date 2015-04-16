@@ -93,7 +93,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                 // mensagenzinha de erro!
                 JOptionPane.showMessageDialog(
                     null,
-                    "Calma aí, fera!\n"
+                    "Calma aí com esse botão de \"OK\", fera!\n"
                             + "Por favor, apenas um código numérico decimal\n"
                             + "que pertencer ao conjunto dos inteiros\n"
                             + "maiores que zero e menores que "
@@ -119,7 +119,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
         btnBuscarAlunoPorID = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        btnAlunoRecuperarSenhaPadrao = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         btnAtualizarExerciciosIncompletos = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
@@ -161,7 +161,12 @@ public class Painel_Instrutor extends javax.swing.JFrame {
             }
         });
 
-        jButton7.setText("Recuperar senha padrão");
+        btnAlunoRecuperarSenhaPadrao.setText("Recuperar senha padrão");
+        btnAlunoRecuperarSenhaPadrao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlunoRecuperarSenhaPadraoActionPerformed(evt);
+            }
+        });
 
         jLabel4.setBackground(new java.awt.Color(39, 174, 96));
         jLabel4.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -285,7 +290,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                             .addComponent(jLabel1)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jButton7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnAlunoRecuperarSenhaPadrao, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(btnBuscarAlunoPorID, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -327,7 +332,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                     .addComponent(jButton8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton7)
+                    .addComponent(btnAlunoRecuperarSenhaPadrao)
                     .addComponent(jButton9)
                     .addComponent(btnLogoff))
                 .addGap(43, 43, 43)
@@ -373,7 +378,9 @@ public class Painel_Instrutor extends javax.swing.JFrame {
             if (aluno.getIdHierarquia().getNome().equalsIgnoreCase("aluno"))
                 new Usuario_Preferencias(aluno).setVisible(true); // prox tela!
             else // opa
-                msg = "Parece que o usuário não é um aluno.\nMeça suas buscas!";
+                msg = "Parece que o usuário não é um aluno.\n"
+                        + "Acesso NEGADO!\n\n"
+                        + "Deixe de cabimento, " + Sessao.usuario_logado().getNome();
             
         } catch(Exception e){
             // erro com DAO. Busca por id <= 0 ou falha no acesso.
@@ -409,6 +416,45 @@ public class Painel_Instrutor extends javax.swing.JFrame {
             
         }
     }//GEN-LAST:event_btnBuscarExercicioPorIDActionPerformed
+
+    /*
+    Recebe o ID de um aluno sua senha retornará para o padrão (== id).
+    */
+    private void btnAlunoRecuperarSenhaPadraoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlunoRecuperarSenhaPadraoActionPerformed
+        String msg = null;
+        
+        try{
+            // busca
+            UsuarioJpaController usuarioDAO = new UsuarioJpaController(Sessao.getEntityManagerFactory());
+            Usuario aluno = usuarioDAO.findUsuario(inputValidoID());
+            
+            // é aluno?
+            if (aluno.getIdHierarquia().getNome().equalsIgnoreCase("aluno")){
+                
+                aluno.setSenha(String.valueOf(aluno.getId())); // muda senha 
+                usuarioDAO.edit(aluno); // persiste
+                
+                // msg continua null (sem erro!)
+                JOptionPane.showMessageDialog(null, "Alteração efetuada com sucesso!"
+                        + "\nAluno: " + aluno.getNome()
+                        + "\nNova senha: " + aluno.getSenha());
+                
+            }else{ // opa, não é um aluno! :o
+                msg = "Parece que o usuário não é um aluno.\n"
+                        + "Acesso NEGADO!\n\n"
+                        + "Deixe de cabimento, " + Sessao.usuario_logado().getNome();
+                
+            }
+        } catch(Exception e){
+            // erro com DAO. Busca por id <= 0 ou falha no acesso.
+            msg = "Não foi possível buscar o ID do aluno ou houve falha na tentativa"
+                    + "de modificar a senha.";
+        }
+        
+        if (msg != null){ // se houver msg, que seja exibida ao mundo!
+            JOptionPane.showMessageDialog(null, msg, "ERRO", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAlunoRecuperarSenhaPadraoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -446,6 +492,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAlunoRecuperarSenhaPadrao;
     private javax.swing.JButton btnAtualizarExerciciosIncompletos;
     private javax.swing.JButton btnBuscarAlunoPorID;
     private javax.swing.JButton btnBuscarExercicioPorID;
@@ -455,7 +502,6 @@ public class Painel_Instrutor extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;

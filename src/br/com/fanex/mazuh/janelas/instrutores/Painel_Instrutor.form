@@ -45,7 +45,7 @@
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="jButton7" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="btnAlunoRecuperarSenhaPadrao" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="btnBuscarAlunoPorID" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jButton3" alignment="0" max="32767" attributes="0"/>
@@ -99,7 +99,7 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jButton7" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnAlunoRecuperarSenhaPadrao" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButton9" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnLogoff" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -164,10 +164,13 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuscarAlunoPorIDActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton7">
+    <Component class="javax.swing.JButton" name="btnAlunoRecuperarSenhaPadrao">
       <Properties>
         <Property name="text" type="java.lang.String" value="Recuperar senha padr&#xe3;o"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAlunoRecuperarSenhaPadraoActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
