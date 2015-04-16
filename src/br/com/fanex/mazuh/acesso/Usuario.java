@@ -86,7 +86,7 @@ public class Usuario implements Serializable {
     
     @Override
     public String toString(){
-        return "(" + this.id + ") " + this.nome;
+        return "(ID " + this.id + ") " + this.nome;
     }
 
     public Integer getId() {

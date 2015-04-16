@@ -23,10 +23,7 @@
  */
 package br.com.fanex.mazuh.janelas.alunos;
 
-import br.com.fanex.mazuh.acesso.Sessao;
 import br.com.fanex.mazuh.edu.Exercicio;
-import br.com.fanex.mazuh.jpa.ExercicioJpaController;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -50,8 +47,8 @@ public class Exercicio_Ver extends javax.swing.JFrame {
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         
-        // setters
-        jExercicio.setText(exercicio.toString());
+        // setters nos JLabel
+        jExercicio.setText("(ID " + exercicio.getId() + ")" + exercicio.toString());
         jEstudante.setText(exercicio.getIdAluno().toString());
         jInstrutor.setText(exercicio.getIdInstrutor().toString());
         

@@ -25,7 +25,11 @@ package br.com.fanex.mazuh.janelas.instrutores;
 
 import br.com.fanex.mazuh.acesso.Sessao;
 import br.com.fanex.mazuh.acesso.Usuario;
+import br.com.fanex.mazuh.edu.Exercicio;
+import br.com.fanex.mazuh.janelas.Login;
 import br.com.fanex.mazuh.janelas.Usuario_Preferencias;
+import br.com.fanex.mazuh.janelas.alunos.Exercicio_Ver;
+import br.com.fanex.mazuh.jpa.ExercicioJpaController;
 import br.com.fanex.mazuh.jpa.UsuarioJpaController;
 import javax.swing.JOptionPane;
 
@@ -46,6 +50,16 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
     }
     
+    /*
+    Abre uma caixa de diálogo para o usuário digitar um ID válido.
+    
+    O ID pode ser de qualquer uma das entidades de persistência.
+    É feita uma checagem básica de integridade e tratamento de erro.
+    Caixas de diálogo de erro podem surgir informando que o valor é inválido.
+    
+    Retorna -1 se algo der errado.
+    Retorna o valor digitado caso ele seja válido.
+    */
     private int inputValidoID(){
         int id = -1; // variável para armazenar o ID que o usuário irá digitar.
         
@@ -55,7 +69,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         
         // botão de cancelar: retorna sinal inválido.
         if (entrada == null)
-            return -1;
+            return -1; // o return aqui evita processamentos desnecessários das linhas seguintes
         
         // botão de ok: bloco de try-catch-finally para mais verificações.
         try {
@@ -69,13 +83,14 @@ public class Painel_Instrutor extends javax.swing.JFrame {
             id = -1;
             
         } finally {
-            
-            if (id > 0){
-                
+             
+            if (id > 0){  
+                // está tudo ok, retorna o id digitado em Integer.
                 return id;
             
-            } else{
+            } else{ // id é 0 ou negativo seja porque o usuário digitou assim, ou porque o catch pegou algo 
                 
+                // mensagenzinha de erro!
                 JOptionPane.showMessageDialog(
                     null,
                     "Calma aí, fera!\n"
@@ -86,7 +101,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                    "Ops...",
                     JOptionPane.ERROR_MESSAGE);
                 
-                return -1;
+                return -1; // e retorno sinalizando invalidez
             }
         }
     }
@@ -109,7 +124,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         btnAtualizarExerciciosIncompletos = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnBuscarExercicioPorID = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jButton6 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
@@ -165,7 +180,12 @@ public class Painel_Instrutor extends javax.swing.JFrame {
 
         jButton2.setText("Listar todos");
 
-        jButton4.setText("Buscar por ID");
+        btnBuscarExercicioPorID.setText("Buscar por ID");
+        btnBuscarExercicioPorID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarExercicioPorIDActionPerformed(evt);
+            }
+        });
 
         jLabel6.setBackground(new java.awt.Color(39, 174, 96));
         jLabel6.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -273,7 +293,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnBuscarExercicioPorID, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -303,7 +323,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBuscarAlunoPorID)
-                    .addComponent(jButton4)
+                    .addComponent(btnBuscarExercicioPorID)
                     .addComponent(jButton8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -327,32 +347,68 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /*
+    Retira o usuário da Sessao, fecha este painel e abre a tela de Login.
+    */
     private void btnLogoffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoffActionPerformed
             Sessao.sair();
             this.dispose();
+            
+            new Login().setVisible(true);
     }//GEN-LAST:event_btnLogoffActionPerformed
 
+    /*
+    Pergunta o ID que quer ser buscado e, se for válido e de um aluno, irá
+    abrir a tela de preferências dele.
+    */
     private void btnBuscarAlunoPorIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarAlunoPorIDActionPerformed
         String msg = null;
         
         try{
+            // busca
             UsuarioJpaController usuarioDAO = new UsuarioJpaController(Sessao.getEntityManagerFactory());
             Usuario aluno = usuarioDAO.findUsuario(inputValidoID());
             
+            // é aluno?
             if (aluno.getIdHierarquia().getNome().equalsIgnoreCase("aluno"))
-                new Usuario_Preferencias(aluno).setVisible(true);
-            else
+                new Usuario_Preferencias(aluno).setVisible(true); // prox tela!
+            else // opa
                 msg = "Parece que o usuário não é um aluno.\nMeça suas buscas!";
             
         } catch(Exception e){
-            msg = "Não foi possível buscar o aluno.";
+            // erro com DAO. Busca por id <= 0 ou falha no acesso.
+            msg = "Não foi possível buscar o ID do aluno.";
         }
         
-        if (msg != null){
+        if (msg != null){ // se houver msg, que seja exibida ao mundo!
             JOptionPane.showMessageDialog(null, msg, "ERRO", JOptionPane.ERROR_MESSAGE);
         }
         
     }//GEN-LAST:event_btnBuscarAlunoPorIDActionPerformed
+
+    /*
+    Pergunta o ID do exercício a ser buscado e, se for válido, irá
+    abrir a tela de visualização dele.
+    */
+    private void btnBuscarExercicioPorIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarExercicioPorIDActionPerformed
+        try{
+            // busca
+            ExercicioJpaController exercicioDAO = new ExercicioJpaController(Sessao.getEntityManagerFactory());
+            Exercicio exercicio = exercicioDAO.findExercicio(inputValidoID());
+            
+            // próx tela
+            new Exercicio_Ver(exercicio).setVisible(true);
+            
+        } catch(Exception e){
+            // erro com DAO. Busca por id <= 0 ou falha no acesso.
+            JOptionPane.showMessageDialog(null,
+                    "Não foi possível buscar o ID do exercício",
+                    "ERRO",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            
+        }
+    }//GEN-LAST:event_btnBuscarExercicioPorIDActionPerformed
 
     /**
      * @param args the command line arguments
@@ -392,11 +448,11 @@ public class Painel_Instrutor extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtualizarExerciciosIncompletos;
     private javax.swing.JButton btnBuscarAlunoPorID;
+    private javax.swing.JButton btnBuscarExercicioPorID;
     private javax.swing.JButton btnLogoff;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
