@@ -63,6 +63,7 @@ public class Sessao {
     e na sessão.
     Qualquer erro aqui será tratado como fatal pelo sistema.
     */
+    /*
     public static void commit(Usuario usuario){
         
         if (Sessao.usuario_logado().equals(usuario)){
@@ -89,7 +90,7 @@ public class Sessao {
                         JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
-    }
+    }*/
     
     /*
     Refaz a query do usuário logado ao banco de dados.
@@ -177,7 +178,7 @@ public class Sessao {
         return data;
         
     }
-  
+    
     /*
     Pega o controlador do objeto.
     */

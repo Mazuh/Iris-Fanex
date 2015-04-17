@@ -31,6 +31,9 @@ import br.com.fanex.mazuh.janelas.Usuario_Preferencias;
 import br.com.fanex.mazuh.janelas.alunos.Exercicio_Ver;
 import br.com.fanex.mazuh.jpa.ExercicioJpaController;
 import br.com.fanex.mazuh.jpa.UsuarioJpaController;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
@@ -39,6 +42,13 @@ import javax.swing.JOptionPane;
  */
 public class Painel_Instrutor extends javax.swing.JFrame {
     
+    // lista de exercícios a preencher a tabela
+    private List<Exercicio> exerciciosPendentes = getExerciciosNaoCorrigidos();
+    
+    // limitando matriz (tabela)
+    private final int TB_ROWS_N = 15; // número de linhas
+    private final int TB_COLS_N = 5; // número de colunas
+        
     /**
      * Creates new form Painel_Instrutor
      */
@@ -48,6 +58,122 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         this.setTitle("Iris - Painel de Instrutor(a)");
         this.setResizable(false);
         this.setLocationRelativeTo(null);
+        
+        // welcome!
+        jBemVindo.setText("Bem-vindo(a), instrutor(a) " 
+                + Sessao.usuario_logado().getNome());
+        
+        // editando tamanho das colunas.
+        tbExercicios.getColumnModel().getColumn(0).setMaxWidth(60); // id
+        tbExercicios.getColumnModel().getColumn(3).setMaxWidth(40); // aula
+    }
+
+    /*
+    Atualiza o usuário da sessão, recupera novos exercícios não corrigidos para
+    uma lista, sendo esta usada para ajustar a nova paginação e registros da tabela.
+    */
+    private void atualizarTudo(){
+        Sessao.refresh();
+        
+        exerciciosPendentes = getExerciciosNaoCorrigidos();
+        
+        setPaginacaoParaTantosExercicios(exerciciosPendentes.size());
+        preencherTbDeExercicios();
+        
+        jUltimoAtualizar.setText(":: Atualizado por último às " + getHorario() + ".");
+    }
+    
+    /*
+    Retorna o horário atual.
+    */
+    private String getHorario(){
+        
+        Calendar tempo = Calendar.getInstance();
+        
+        return tempo.get(Calendar.HOUR) + ":" + tempo.get(Calendar.MINUTE);
+        
+    }
+    
+    /*
+    Ajusta o limite de páginas de acordo com a quantidade de exercícios
+    e seta no jLabel no formato "x/y", onde 'x' é resetado a 1 e 'y' é o limite.
+    */
+    private void setPaginacaoParaTantosExercicios(int qtdObjetos){
+        int paginas;// novo limite de páginas
+
+        boolean isDivisivel = qtdObjetos % 15 == 0; // se qtd é divisível por 15
+        
+        // divide a quantidade entre as linhas disponíveis
+        paginas = (int) (qtdObjetos / 15); // irá receber o menor inteiro do quociente da divisão
+        
+        paginas += (isDivisivel ? 0 : 1); // se o número não for divisĩvel, +1 pra compensar
+        
+        
+        jPagina.setText("1/" + paginas);
+        
+    }
+    
+    /*
+    Preenche a tabela de acordo com os dados da lista de exercícios pendentes
+    e também de acordo com a página atual.
+    */
+    private void preencherTbDeExercicios(){
+        
+        // índice para saber qual a primeira posição da lista a ser acessada
+        // definindo primeiro valor do índice baseado na página atual da tabela
+        // achando o número da página:
+        //          "x/y"   ->   split("/")   ->   [0]="x", [1]="y".
+        int indice = (Integer.valueOf(jPagina.getText().split("/")[0]) - 1) * 15;
+                                                  // ex: pag = 1 -> indice = 0
+                                                  //     pag = 2 -> indice = 15
+                                                  //     pag = 3 -> indice = 30 (...)
+        
+        // preenchendo todas as linhas!
+        // o laço irá parar caso chegue ao limite da lista ou da tabela.
+        for (int row = 0; (row < exerciciosPendentes.size() && row < TB_ROWS_N); row++){
+            
+            // objeto com dados da linha atual do laço
+            Exercicio foo = exerciciosPendentes.get(indice); // por que usar variável externa ao invés do index do laço?
+                                                          // Ver comentários da declaração da int indice.
+            
+            // definindo dados para as colunas da linha atual do laço
+            String[] cols = new String[]{
+                String.valueOf(foo.getId()), // num id 
+                foo.getIdAluno().getNome(), // nome aluno
+                foo.getIdCurso().getNome(), // nome curso
+                String.valueOf(foo.getNumAula()), // num aula
+                foo.getSituacao() // nome situacao
+            };
+            
+            // preenchendo as colunas com os dados preenchidos anteriormente
+            for (int col = 0; col < TB_COLS_N; col++){
+                tbExercicios.setValueAt(cols[col], row, col);
+            }
+            
+            indice++; // avança o índice.
+            
+        }
+        
+    }
+    
+    /*
+    Retorna todos os exercícios que o instrutor tem considerados "enviados".
+    */
+    private List<Exercicio> getExerciciosNaoCorrigidos(){
+        // todos os exercícios
+        List<Exercicio> exercicios = Sessao.usuario_logado().getExercicioList();
+        
+        // variável para armazenar os exercícios declarados 'enviados' não-corrigidos
+        List<Exercicio> nao_corrigidos = new ArrayList<>();
+        
+        for (int i = 0; i < exercicios.size(); i++){
+            // os que tiverem "enviado" ("enviado em xx/xx/xx") são...
+            if (exercicios.get(i).getSituacao().contains("Enviado"))
+                nao_corrigidos.add(exercicios.get(i)); // ... armazenados aqui
+        
+        }
+        
+        return nao_corrigidos; // retorna o que foi armazenado (pode ser null)
     }
     
     /*
@@ -115,7 +241,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        jBemVindo = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
         btnBuscarAlunoPorID = new javax.swing.JButton();
@@ -131,20 +257,27 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         jButton9 = new javax.swing.JButton();
         btnLogoff = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jLabel8 = new javax.swing.JLabel();
+        tbExercicios = new javax.swing.JTable();
+        btnAnt = new javax.swing.JButton();
+        btnProx = new javax.swing.JButton();
+        jPagina = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        jUltimoAtualizar = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+            }
+        });
 
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(22, 160, 133));
-        jLabel1.setText("Bem-vindo(a), instrutor(a)");
-        jLabel1.setOpaque(true);
+        jBemVindo.setBackground(new java.awt.Color(255, 255, 255));
+        jBemVindo.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jBemVindo.setForeground(new java.awt.Color(22, 160, 133));
+        jBemVindo.setText("Bem-vindo(a), instrutor(a)");
+        jBemVindo.setOpaque(true);
 
         jLabel2.setBackground(new java.awt.Color(39, 174, 96));
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -176,6 +309,11 @@ public class Painel_Instrutor extends javax.swing.JFrame {
 
         btnAtualizarExerciciosIncompletos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/pasta.gif"))); // NOI18N
         btnAtualizarExerciciosIncompletos.setText("Atualizar");
+        btnAtualizarExerciciosIncompletos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAtualizarExerciciosIncompletosActionPerformed(evt);
+            }
+        });
 
         jLabel5.setBackground(new java.awt.Color(39, 174, 96));
         jLabel5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -222,8 +360,8 @@ public class Painel_Instrutor extends javax.swing.JFrame {
             }
         });
 
-        jTable1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbExercicios.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        tbExercicios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -246,7 +384,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, false
@@ -260,20 +398,30 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jTable1.setColumnSelectionAllowed(true);
-        jTable1.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(jTable1);
-        jTable1.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tbExercicios.setColumnSelectionAllowed(true);
+        tbExercicios.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tbExercicios);
+        tbExercicios.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
-        jButton1.setText("<");
+        btnAnt.setText("<");
+        btnAnt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAntActionPerformed(evt);
+            }
+        });
 
-        jButton5.setText(">");
+        btnProx.setText(">");
+        btnProx.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProxActionPerformed(evt);
+            }
+        });
 
-        jLabel8.setText("0");
+        jPagina.setText("1/1");
 
         jLabel7.setText("Páginas:");
 
-        jLabel3.setText(":: Você tem 0 exercício(s) para corrigir.");
+        jUltimoAtualizar.setText(":: Atualizado por último às");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -283,21 +431,21 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
+                        .addComponent(jUltimoAtualizar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel7)
                         .addGap(4, 4, 4)
-                        .addComponent(jButton1)
+                        .addComponent(btnAnt)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel8)
+                        .addComponent(jPagina)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5)
+                        .addComponent(btnProx)
                         .addGap(53, 53, 53)
                         .addComponent(btnAtualizarExerciciosIncompletos, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
-                            .addComponent(jLabel1)
+                            .addComponent(jBemVindo)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(btnAlunoRecuperarSenhaPadrao, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -324,7 +472,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(jBemVindo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -349,12 +497,12 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton5)
-                    .addComponent(jLabel8)
+                    .addComponent(btnAnt)
+                    .addComponent(btnProx)
+                    .addComponent(jPagina)
                     .addComponent(jLabel7)
                     .addComponent(btnAtualizarExerciciosIncompletos)
-                    .addComponent(jLabel3))
+                    .addComponent(jUltimoAtualizar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE))
         );
@@ -483,6 +631,57 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         new Usuario_Preferencias(Sessao.usuario_logado()).setVisible(true);
     }//GEN-LAST:event_btnPreferenciasActionPerformed
 
+    /*
+    Sempre que a janela entrar em foco, atualiza a tabela.
+    */
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        atualizarTudo();
+    }//GEN-LAST:event_formWindowGainedFocus
+
+    /*
+    Basicamente o botão de atualizar irá repreencher a tabela.
+    */
+    private void btnAtualizarExerciciosIncompletosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarExerciciosIncompletosActionPerformed
+        atualizarTudo();
+    }//GEN-LAST:event_btnAtualizarExerciciosIncompletosActionPerformed
+
+    /*
+    Avança uma página, se puder.
+    */
+    private void btnProxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProxActionPerformed
+        // encontra página e limite de páginas 
+        String[] paginacao = jPagina.getText().split("/"); // var auxiliar para split 
+        int pagina = Integer.valueOf(paginacao[0]);
+        int limite = Integer.valueOf(paginacao[1]);
+        
+        // se não tiver no limite, pode avançar 
+        if (pagina < limite)
+            pagina++;
+        
+        // seta nova página
+        jPagina.setText(pagina + "/" + limite);
+        
+        preencherTbDeExercicios();
+    }//GEN-LAST:event_btnProxActionPerformed
+
+    /*
+    Retrocede uma página, se puder.
+    */
+    private void btnAntActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAntActionPerformed
+        // encontra página
+        String[] paginacao = jPagina.getText().split("/"); // var auxiliar para split 
+        int pagina = Integer.valueOf(paginacao[0]);
+        
+        // se não tiver no limite, pode retroceder 
+        if (pagina > 1)
+            pagina--;
+        
+        // seta nova página
+        jPagina.setText(pagina + "/" + paginacao[1]);
+        
+        preencherTbDeExercicios();
+    }//GEN-LAST:event_btnAntActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -520,26 +719,26 @@ public class Painel_Instrutor extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAlunoRecuperarSenhaPadrao;
+    private javax.swing.JButton btnAnt;
     private javax.swing.JButton btnAtualizarExerciciosIncompletos;
     private javax.swing.JButton btnBuscarAlunoPorID;
     private javax.swing.JButton btnBuscarExercicioPorID;
     private javax.swing.JButton btnContato;
     private javax.swing.JButton btnLogoff;
     private javax.swing.JButton btnPreferencias;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnProx;
+    private javax.swing.JLabel jBemVindo;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton9;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jPagina;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JLabel jUltimoAtualizar;
+    private javax.swing.JTable tbExercicios;
     // End of variables declaration//GEN-END:variables
 }

@@ -26,6 +26,7 @@ package br.com.fanex.mazuh.janelas;
 import br.com.fanex.mazuh.janelas.alunos.Painel_Estudante;
 import br.com.fanex.mazuh.acesso.Sessao;
 import br.com.fanex.mazuh.janelas.instrutores.Painel_Instrutor;
+import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 
@@ -121,10 +122,22 @@ public class Login extends javax.swing.JFrame {
             
             apagarCampos();
             
-        }catch(Exception e){
-            // OK. Talvez a falha seja do programador mesmo. '-'
+        }catch(HeadlessException e){
+            // OK. Talvez a falha seja do desenvolvedor mesmo. '-'
             JOptionPane.showMessageDialog(null,
-                    "Opa. Algo estranho aconteceu.\nFale com seu instrutor!", 
+                    "Opa. Algo estranho aconteceu.\n"
+                            + "HeadlessException\n"
+                            + "Reporte este erro ao desenvolvedor!\n"
+                            + e.getMessage(), 
+                    "ERRO", 
+                    JOptionPane.ERROR_MESSAGE);
+            
+        }catch(Exception e){
+            // Algo beeem estranho rolou aqui.
+            JOptionPane.showMessageDialog(null,
+                    "Opa. Algo estranho aconteceu.\n"
+                            + "Reporte este erro ao desenvolvedor!\n"
+                            + e.getMessage(), 
                     "ERRO", 
                     JOptionPane.ERROR_MESSAGE);
             
