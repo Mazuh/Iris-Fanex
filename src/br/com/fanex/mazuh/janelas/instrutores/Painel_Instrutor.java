@@ -286,6 +286,11 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         jLabel2.setOpaque(true);
 
         jButton3.setText("Listar todos");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         btnBuscarAlunoPorID.setText("Buscar por ID");
         btnBuscarAlunoPorID.addActionListener(new java.awt.event.ActionListener() {
@@ -681,6 +686,13 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         
         preencherTbDeExercicios();
     }//GEN-LAST:event_btnAntActionPerformed
+
+    /*
+    Abre a listagem de alunos.
+    */
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        new Usuarios_VerTodos().setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
