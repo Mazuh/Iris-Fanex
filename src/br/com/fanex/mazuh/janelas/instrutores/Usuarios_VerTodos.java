@@ -23,10 +23,11 @@
  */
 package br.com.fanex.mazuh.janelas.instrutores;
 
+import br.com.fanex.mazuh.acesso.Hierarquia;
 import br.com.fanex.mazuh.acesso.Sessao;
 import br.com.fanex.mazuh.acesso.Usuario;
+import br.com.fanex.mazuh.jpa.HierarquiaJpaController;
 import br.com.fanex.mazuh.jpa.UsuarioJpaController;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -76,6 +77,9 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
         
         // título
         jTitulo.setText(jTitulo.getText() + (isAdmin ? "USUARIOS" : "ALUNOS"));
+        
+        // botão de addInstrutor só é liberado pra admins
+        btnAddInstrutor.setEnabled(isAdmin);
     }
     
     /*
@@ -202,6 +206,62 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
     private int getQtdUsers(){
         return new UsuarioJpaController(Sessao.getEntityManagerFactory()).getUsuarioCount();
     }
+    
+    /*
+    Abre uma caixa de diálogo para o usuário digitar um ID válido.
+    
+    O ID pode ser de qualquer uma das entidades de persistência.
+    É feita uma checagem básica de integridade e tratamento de erro.
+    Caixas de diálogo de erro podem surgir informando que o valor é inválido.
+    
+    Retorna -1 se algo der errado.
+    Retorna o valor digitado caso ele seja válido.
+    */
+    private int inputValidoID(){
+        int id = -1; // variável para armazenar o ID que o usuário irá digitar.
+        
+        // caixa de diálogo pra entrada de dados em texto.
+        String entrada = JOptionPane.showInputDialog(null,
+                "Digite o ID (código numérico) válido:");
+        
+        // botão de cancelar: retorna sinal inválido.
+        if (entrada == null)
+            return -1; // o return aqui evita processamentos desnecessários das linhas seguintes
+        
+        // botão de ok: bloco de try-catch-finally para mais verificações.
+        try {
+           
+            // tenta converter pra inteiro
+            id = Integer.valueOf(entrada);
+            
+        } catch (NumberFormatException e) {
+            
+            // erro?
+            id = -1;
+            
+        } finally {
+             
+            if (id > 0){  
+                // está tudo ok, retorna o id digitado em Integer.
+                return id;
+            
+            } else{ // id é 0 ou negativo seja porque o usuário digitou assim, ou porque o catch pegou algo 
+                
+                // mensagenzinha de erro!
+                JOptionPane.showMessageDialog(
+                    null,
+                    "Calma aí com esse botão de \"OK\", fera!\n"
+                            + "Por favor, apenas um código numérico decimal\n"
+                            + "que pertencer ao conjunto dos inteiros\n"
+                            + "maiores que zero e menores que "
+                            + Integer.MAX_VALUE + ".",
+                   "Ops...",
+                    JOptionPane.ERROR_MESSAGE);
+                
+                return -1; // e retorno sinalizando invalidez
+            }
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -214,12 +274,17 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tbUsers = new javax.swing.JTable();
-        btnNovo = new javax.swing.JButton();
+        btnAddAluno = new javax.swing.JButton();
         btnAnt = new javax.swing.JButton();
         btnProx = new javax.swing.JButton();
         jPagina = new javax.swing.JLabel();
         jTitulo = new javax.swing.JLabel();
         btnVoltar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        btnAddInstrutor = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
@@ -275,8 +340,13 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
             tbUsers.getColumnModel().getColumn(0).setResizable(false);
         }
 
-        btnNovo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/mais.gif"))); // NOI18N
-        btnNovo.setText("Novo ID");
+        btnAddAluno.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/mais.gif"))); // NOI18N
+        btnAddAluno.setText("Novo Aluno");
+        btnAddAluno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddAlunoActionPerformed(evt);
+            }
+        });
 
         btnAnt.setText("<");
         btnAnt.addActionListener(new java.awt.event.ActionListener() {
@@ -308,6 +378,22 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("De preferência, mantenha os alunos com IDs (códigos)");
+
+        jLabel2.setText("iguais ao que eles usam para acessar a aula. E mantenha");
+
+        jLabel3.setText("os NOMES e SENHAS diferentes do padrão para melhor ");
+
+        jLabel4.setText("identificação e segurança de todos.");
+
+        btnAddInstrutor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/mais.gif"))); // NOI18N
+        btnAddInstrutor.setText("Novo INSTRUTOR");
+        btnAddInstrutor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddInstrutorActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -315,37 +401,56 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnNovo)
+                        .addComponent(btnAddAluno)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTitulo)
+                        .addComponent(btnAddInstrutor)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnAnt)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPagina)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnProx))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnVoltar)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                        .addComponent(btnVoltar))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel1)
+                            .addComponent(jTitulo))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(21, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jTitulo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnNovo)
+                    .addComponent(btnAddAluno)
                     .addComponent(btnAnt)
                     .addComponent(btnProx)
                     .addComponent(jPagina)
-                    .addComponent(jTitulo))
+                    .addComponent(btnAddInstrutor))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnVoltar)
-                .addContainerGap())
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3))
+                    .addComponent(btnVoltar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4))
         );
 
         pack();
@@ -402,6 +507,64 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
         atualizar();
     }//GEN-LAST:event_formWindowGainedFocus
 
+    /*
+    Pergunta o novo id.
+    É criado um novo objeto ALUNO na memória com esse id.
+    É tentado persistir esse objeto.
+    
+    É possível que mensagens de erro sejam emitidas em caixas de diálogo.
+    */
+    private void btnAddAlunoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAlunoActionPerformed
+        int id = inputValidoID();
+        
+        try{
+            // busca hierarquia de aluno
+            Hierarquia cargoAluno = (new HierarquiaJpaController(Sessao.getEntityManagerFactory()))
+                    .findHierarquia(3);
+            
+            if (!cargoAluno.getNome().equalsIgnoreCase("aluno")){
+                
+                JOptionPane.showMessageDialog(null,
+                        "Falha na integridade de hierarquias no banco de dados.\n"
+                                + "Se o erro persistir, contate o desenvolvedor!",
+                        "ERRO FATAL",
+                        JOptionPane.ERROR_MESSAGE);
+                
+                System.exit(1);
+            }
+            
+            Usuario novoAluno = new Usuario();
+            novoAluno.setId(id); // id
+            novoAluno.setNome(String.valueOf(id)); // nome 
+            novoAluno.setSenha(String.valueOf(id)); // senha
+            novoAluno.setIdHierarquia(cargoAluno); // cargo 
+            
+            new UsuarioJpaController(Sessao.getEntityManagerFactory()).create(novoAluno);
+            
+            JOptionPane.showMessageDialog(null,
+                    "USUÁRIO CRIADO"
+                            + "\nID: " + id
+                            + "\nNome: " + id
+                            + "\nSenha: " + id
+                            + "\nCargo: " + cargoAluno.getNome().toUpperCase()
+                            + "\n\nO novo usuário deve efetuar o login e definir novos 'nome' e 'senha'."
+            );
+            
+        } catch(Exception e){
+            
+            JOptionPane.showMessageDialog(null,
+                    "Aluno não criado.",
+                    "Ops...",
+                    JOptionPane.ERROR_MESSAGE);
+            
+        }
+        
+    }//GEN-LAST:event_btnAddAlunoActionPerformed
+
+    private void btnAddInstrutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddInstrutorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAddInstrutorActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -439,10 +602,15 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddAluno;
+    private javax.swing.JButton btnAddInstrutor;
     private javax.swing.JButton btnAnt;
-    private javax.swing.JButton btnNovo;
     private javax.swing.JButton btnProx;
     private javax.swing.JButton btnVoltar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jPagina;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jTitulo;
