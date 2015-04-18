@@ -516,53 +516,65 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
     */
     private void btnAddAlunoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAlunoActionPerformed
         int id = inputValidoID();
-        
-        try{
-            // busca hierarquia de aluno
-            Hierarquia cargoAluno = (new HierarquiaJpaController(Sessao.getEntityManagerFactory()))
-                    .findHierarquia(3);
-            
-            if (!cargoAluno.getNome().equalsIgnoreCase("aluno")){
-                
+
+        if (id > 0) {
+            try {
+                // busca hierarquia de aluno
+                Hierarquia cargoAluno = (new HierarquiaJpaController(Sessao.getEntityManagerFactory()))
+                        .findHierarquia(3);
+
+                if (!cargoAluno.getNome().equalsIgnoreCase("aluno")) {
+
+                    JOptionPane.showMessageDialog(null,
+                            "Falha na integridade de hierarquias no banco de dados.\n"
+                            + "Se o erro persistir, contate o desenvolvedor!",
+                            "ERRO FATAL",
+                            JOptionPane.ERROR_MESSAGE);
+
+                    System.exit(1);
+                }
+
+                Usuario novoAluno = new Usuario();
+                novoAluno.setId(id); // id
+                novoAluno.setNome(String.valueOf(id)); // nome 
+                novoAluno.setSenha(String.valueOf(id)); // senha
+                novoAluno.setIdHierarquia(cargoAluno); // cargo 
+
+                new UsuarioJpaController(Sessao.getEntityManagerFactory()).create(novoAluno);
+
                 JOptionPane.showMessageDialog(null,
-                        "Falha na integridade de hierarquias no banco de dados.\n"
-                                + "Se o erro persistir, contate o desenvolvedor!",
-                        "ERRO FATAL",
+                        "USUÁRIO CRIADO"
+                        + "\nID: " + id
+                        + "\nNome: " + id
+                        + "\nSenha: " + id
+                        + "\nCargo: " + cargoAluno.getNome().toUpperCase()
+                        + "\n\nFaça o novo usuário efetuar o login e definir novos 'nome' e 'senha'."
+                );
+
+            } catch (Exception e) {
+
+                JOptionPane.showMessageDialog(null,
+                        "Aluno não criado. Verifique: \n"
+                                + "- se o código já existe (todos devem ser únicos e válidos);"
+                                + "- se a conexão com o banco de dados está ok;",
+                        "Ops...",
                         JOptionPane.ERROR_MESSAGE);
-                
-                System.exit(1);
+
             }
-            
-            Usuario novoAluno = new Usuario();
-            novoAluno.setId(id); // id
-            novoAluno.setNome(String.valueOf(id)); // nome 
-            novoAluno.setSenha(String.valueOf(id)); // senha
-            novoAluno.setIdHierarquia(cargoAluno); // cargo 
-            
-            new UsuarioJpaController(Sessao.getEntityManagerFactory()).create(novoAluno);
-            
-            JOptionPane.showMessageDialog(null,
-                    "USUÁRIO CRIADO"
-                            + "\nID: " + id
-                            + "\nNome: " + id
-                            + "\nSenha: " + id
-                            + "\nCargo: " + cargoAluno.getNome().toUpperCase()
-                            + "\n\nO novo usuário deve efetuar o login e definir novos 'nome' e 'senha'."
-            );
-            
-        } catch(Exception e){
-            
-            JOptionPane.showMessageDialog(null,
-                    "Aluno não criado.",
-                    "Ops...",
-                    JOptionPane.ERROR_MESSAGE);
-            
         }
+        
         
     }//GEN-LAST:event_btnAddAlunoActionPerformed
 
+    /*
+    Pergunta o novo id.
+    É criado um novo objeto ALUNO na memória com esse id.
+    É tentado persistir esse objeto.
+    
+    É possível que mensagens de erro sejam emitidas em caixas de diálogo.
+    */
     private void btnAddInstrutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddInstrutorActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_btnAddInstrutorActionPerformed
 
     /**

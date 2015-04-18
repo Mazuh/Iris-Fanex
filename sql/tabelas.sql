@@ -34,3 +34,5 @@ CREATE TABLE exercicios(
 	correcao TEXT,
 	is_corrigido SMALLINT NOT NULL DEFAULT 0
 );
+
+DROP SEQUENCE usuarios_id_seq CASCADE;
