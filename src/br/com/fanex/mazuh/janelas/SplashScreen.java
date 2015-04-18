@@ -43,6 +43,7 @@ public class SplashScreen extends javax.swing.JFrame {
         
         initComponents();
         
+        this.setTitle("Iniciando Íris...");
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(new Color(0, 0, 0));
     }

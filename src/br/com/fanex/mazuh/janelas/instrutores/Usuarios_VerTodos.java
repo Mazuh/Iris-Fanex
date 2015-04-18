@@ -568,7 +568,7 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
 
     /*
     Pergunta o novo id.
-    É criado um novo objeto ALUNO na memória com esse id.
+    É criado um novo objeto INSTRUTOR na memória com esse id.
     É tentado persistir esse objeto.
     
     É possível que mensagens de erro sejam emitidas em caixas de diálogo.
@@ -576,14 +576,21 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
     private void btnAddInstrutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddInstrutorActionPerformed
         JOptionPane.showMessageDialog(null, "ATENÇÃO, ADMINISTRADOR!\n\n"
                 + "Se você estiver TROCANDO de instrutores, NÃO crie um novo."
+                + "\nCancele isto."
                 + "\nApenas troque o nome e senha do instrutor antigo!"
-                + "\n\nIsso evita poluição do banco de dados.\n"
-                + "Em caso de dúvida, contate o desenvolvedor!");
+                + "\n\nIsso evita poluição do banco de dados, evitando que\n"
+                + "haja um monte de instrutores fantasmas para os alunos."
+                + "\nEm caso de dúvida, contate o desenvolvedor!");
         
         int id = inputValidoID();
 
         if (id > 0) {
             try {
+                
+                // deixa o instrutor com um código diferenciado
+                if (id < 9000)
+                    id += 9000;
+                
                 // busca hierarquia de aluno
                 Hierarquia cargoInstrutor = (new HierarquiaJpaController(Sessao.getEntityManagerFactory()))
                         .findHierarquia(2);
@@ -602,16 +609,16 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
                 Usuario novoAluno = new Usuario();
                 novoAluno.setId(id); // id
                 novoAluno.setNome("Fessôr"); // nome 
-                novoAluno.setSenha("kkk"); // senha
+                novoAluno.setSenha("risos"); // senha
                 novoAluno.setIdHierarquia(cargoInstrutor); // cargo 
 
                 new UsuarioJpaController(Sessao.getEntityManagerFactory()).create(novoAluno);
 
                 JOptionPane.showMessageDialog(null,
                         "USUÁRIO CRIADO"
-                        + "\nID: " + id
+                        + "\nID: " + id + " (código de instrutores são diferenciados)"
                         + "\nNome: Fessôr"
-                        + "\nSenha: kkk"
+                        + "\nSenha: risos"
                         + "\nCargo: " + cargoInstrutor.getNome().toUpperCase()
                         + "\n\nO novo instrutor DEVE mudar seu nome e senha!"
                 );
@@ -619,8 +626,8 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
             } catch (Exception e) {
 
                 JOptionPane.showMessageDialog(null,
-                        "Aluno não criado. Verifique: \n"
-                                + "- se o código já existe (todos devem ser únicos e válidos);"
+                        "Instrutor não criado. Verifique: \n"
+                                + "- se o código" + id + "já existe (todos devem ser únicos e válidos);"
                                 + "- se a conexão com o banco de dados está ok;",
                         "Ops...",
                         JOptionPane.ERROR_MESSAGE);
