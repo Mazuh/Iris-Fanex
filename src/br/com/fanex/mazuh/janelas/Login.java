@@ -52,6 +52,7 @@ public class Login extends javax.swing.JFrame {
     private void apagarCampos(){
         jCodigo.setText("");
         jSenha.setText("");
+        jCodigo.requestFocus();
     }
     
     /*
@@ -293,6 +294,7 @@ public class Login extends javax.swing.JFrame {
         
         String sobre = "Sistema Iris: Copyright (c) 2015 Marcell Guilherme (\"Mazuh\")\n"
                 + "E-mail: marcell-mz@hotmail.com\n"
+                + "Website: mazuh-desenvolvedor.zz.vc\n"
                 + "\n"
                 + "Este programa é licenciado sob a MIT License (MIT).\n"
                 + "Cópia da Licença: http://opensource.org/licenses/MIT\n"
@@ -317,16 +319,17 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jCodigoKeyReleased
 
     private void jSenhaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jSenhaKeyReleased
-        
+    
     }//GEN-LAST:event_jSenhaKeyReleased
-
+     
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
         // Quando a janela entra em foco, o ponteiro de digitação vai pro 1o campo
         jCodigo.requestFocus();
     }//GEN-LAST:event_formFocusGained
 
     private void jCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jCodigoKeyPressed
-        // Se apertar enter, pulará pra o campo de senha (funcionará como um Tab)
+        // ao apertar enter com o código em foco, mudará o foco pra a senha
+        // (como uma teclada no Tab)
         if (evt.getKeyCode() == KeyEvent.VK_ENTER)
             jSenha.requestFocus();
     }//GEN-LAST:event_jCodigoKeyPressed
@@ -336,7 +339,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jCodigoKeyTyped
 
     private void jSenhaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jSenhaKeyPressed
-        // Se o campo marcado for o de senha ao apertar enter, tenta logar!
+        // ao apertar enter com a senha em foco, tenta logar!
         if (evt.getKeyCode() == KeyEvent.VK_ENTER)
             tentarLogar();
     }//GEN-LAST:event_jSenhaKeyPressed
