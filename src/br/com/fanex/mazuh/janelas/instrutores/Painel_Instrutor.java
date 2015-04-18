@@ -243,18 +243,18 @@ public class Painel_Instrutor extends javax.swing.JFrame {
 
         jBemVindo = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        btnAlunos = new javax.swing.JButton();
         btnBuscarAlunoPorID = new javax.swing.JButton();
         btnAlunoRecuperarSenhaPadrao = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         btnAtualizarExerciciosIncompletos = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        btnExercicios = new javax.swing.JButton();
         btnBuscarExercicioPorID = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         btnPreferencias = new javax.swing.JButton();
         btnContato = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
+        btnCursos = new javax.swing.JButton();
         btnLogoff = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbExercicios = new javax.swing.JTable();
@@ -285,10 +285,10 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         jLabel2.setText("ALUNOS DESTA UNIDADE");
         jLabel2.setOpaque(true);
 
-        jButton3.setText("Listar todos");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnAlunos.setText("Listar todos ou cadastrar");
+        btnAlunos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnAlunosActionPerformed(evt);
             }
         });
 
@@ -326,7 +326,13 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         jLabel5.setText("EXERCÍCIOS DE REVISÃO AGUARDANDO SUA CORREÇÃO");
         jLabel5.setOpaque(true);
 
-        jButton2.setText("Listar todos");
+        btnExercicios.setText("Listar todos");
+        btnExercicios.setEnabled(false);
+        btnExercicios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExerciciosActionPerformed(evt);
+            }
+        });
 
         btnBuscarExercicioPorID.setText("Buscar por ID");
         btnBuscarExercicioPorID.addActionListener(new java.awt.event.ActionListener() {
@@ -355,8 +361,12 @@ public class Painel_Instrutor extends javax.swing.JFrame {
             }
         });
 
-        jButton9.setText("Pedidos p/ imprimir");
-        jButton9.setEnabled(false);
+        btnCursos.setText("Cursos");
+        btnCursos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCursosActionPerformed(evt);
+            }
+        });
 
         btnLogoff.setText("Fazer logoff");
         btnLogoff.addActionListener(new java.awt.event.ActionListener() {
@@ -456,13 +466,13 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                                     .addComponent(btnAlunoRecuperarSenhaPadrao, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(btnBuscarAlunoPorID, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(btnAlunos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnExercicios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnBuscarExercicioPorID, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(btnCursos, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -485,8 +495,8 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                     .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton2)
+                    .addComponent(btnAlunos)
+                    .addComponent(btnExercicios)
                     .addComponent(btnPreferencias))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -496,7 +506,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAlunoRecuperarSenhaPadrao)
-                    .addComponent(jButton9)
+                    .addComponent(btnCursos)
                     .addComponent(btnLogoff))
                 .addGap(43, 43, 43)
                 .addComponent(jLabel5)
@@ -690,9 +700,18 @@ public class Painel_Instrutor extends javax.swing.JFrame {
     /*
     Abre a listagem de alunos.
     */
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnAlunosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlunosActionPerformed
         new Usuarios_VerTodos().setVisible(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnAlunosActionPerformed
+
+    private void btnExerciciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExerciciosActionPerformed
+        
+    }//GEN-LAST:event_btnExerciciosActionPerformed
+
+    private void btnCursosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCursosActionPerformed
+        new Cursos_CRUD().setVisible(true);
+        
+    }//GEN-LAST:event_btnCursosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -731,18 +750,18 @@ public class Painel_Instrutor extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAlunoRecuperarSenhaPadrao;
+    private javax.swing.JButton btnAlunos;
     private javax.swing.JButton btnAnt;
     private javax.swing.JButton btnAtualizarExerciciosIncompletos;
     private javax.swing.JButton btnBuscarAlunoPorID;
     private javax.swing.JButton btnBuscarExercicioPorID;
     private javax.swing.JButton btnContato;
+    private javax.swing.JButton btnCursos;
+    private javax.swing.JButton btnExercicios;
     private javax.swing.JButton btnLogoff;
     private javax.swing.JButton btnPreferencias;
     private javax.swing.JButton btnProx;
     private javax.swing.JLabel jBemVindo;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
