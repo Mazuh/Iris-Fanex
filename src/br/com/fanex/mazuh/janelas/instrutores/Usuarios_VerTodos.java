@@ -574,6 +574,59 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
     É possível que mensagens de erro sejam emitidas em caixas de diálogo.
     */
     private void btnAddInstrutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddInstrutorActionPerformed
+        JOptionPane.showMessageDialog(null, "ATENÇÃO, ADMINISTRADOR!\n\n"
+                + "Se você estiver TROCANDO de instrutores, NÃO crie um novo."
+                + "\nApenas troque o nome e senha do instrutor antigo!"
+                + "\n\nIsso evita poluição do banco de dados.\n"
+                + "Em caso de dúvida, contate o desenvolvedor!");
+        
+        int id = inputValidoID();
+
+        if (id > 0) {
+            try {
+                // busca hierarquia de aluno
+                Hierarquia cargoInstrutor = (new HierarquiaJpaController(Sessao.getEntityManagerFactory()))
+                        .findHierarquia(2);
+
+                if (!cargoInstrutor.getNome().equalsIgnoreCase("instrutor")) {
+
+                    JOptionPane.showMessageDialog(null,
+                            "Falha na integridade de hierarquias no banco de dados.\n"
+                            + "Se o erro persistir, contate o desenvolvedor!",
+                            "ERRO FATAL",
+                            JOptionPane.ERROR_MESSAGE);
+
+                    System.exit(1);
+                }
+
+                Usuario novoAluno = new Usuario();
+                novoAluno.setId(id); // id
+                novoAluno.setNome("Fessôr"); // nome 
+                novoAluno.setSenha("kkk"); // senha
+                novoAluno.setIdHierarquia(cargoInstrutor); // cargo 
+
+                new UsuarioJpaController(Sessao.getEntityManagerFactory()).create(novoAluno);
+
+                JOptionPane.showMessageDialog(null,
+                        "USUÁRIO CRIADO"
+                        + "\nID: " + id
+                        + "\nNome: Fessôr"
+                        + "\nSenha: kkk"
+                        + "\nCargo: " + cargoInstrutor.getNome().toUpperCase()
+                        + "\n\nO novo instrutor DEVE mudar seu nome e senha!"
+                );
+
+            } catch (Exception e) {
+
+                JOptionPane.showMessageDialog(null,
+                        "Aluno não criado. Verifique: \n"
+                                + "- se o código já existe (todos devem ser únicos e válidos);"
+                                + "- se a conexão com o banco de dados está ok;",
+                        "Ops...",
+                        JOptionPane.ERROR_MESSAGE);
+
+            }
+        }
         
     }//GEN-LAST:event_btnAddInstrutorActionPerformed
 
