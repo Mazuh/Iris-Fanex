@@ -534,14 +534,17 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
                     System.exit(1);
                 }
 
+                // setters
                 Usuario novoAluno = new Usuario();
                 novoAluno.setId(id); // id
                 novoAluno.setNome(String.valueOf(id)); // nome 
                 novoAluno.setSenha(String.valueOf(id)); // senha
                 novoAluno.setIdHierarquia(cargoAluno); // cargo 
 
+                // persistência. Pode lançar exception.
                 new UsuarioJpaController(Sessao.getEntityManagerFactory()).create(novoAluno);
 
+                // aviso
                 JOptionPane.showMessageDialog(null,
                         "USUÁRIO CRIADO"
                         + "\nID: " + id
@@ -555,8 +558,8 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
 
                 JOptionPane.showMessageDialog(null,
                         "Aluno não criado. Verifique: \n"
-                                + "- se o código já existe (todos devem ser únicos e válidos);"
-                                + "- se a conexão com o banco de dados está ok;",
+                                + "- se o código ou nome já existem (todos devem ser únicos e válidos);\n"
+                                + "- se a conexão com o banco de dados está ok.\n",
                         "Ops...",
                         JOptionPane.ERROR_MESSAGE);
 

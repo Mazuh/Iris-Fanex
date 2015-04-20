@@ -42,3 +42,9 @@ DROP SEQUENCE usuarios_id_seq CASCADE;
 ALTER TABLE cursos
 	ALTER COLUMN url_gabarito TYPE varchar(200),
 	ALTER COLUMN url_gabarito_alt TYPE varchar(200);
+
+ALTER TABLE cursos
+	ADD CONSTRAINT nome_unico UNIQUE (nome);
+
+ALTER TABLE usuarios
+	ADD CONSTRAINT nome_unico_user UNIQUE (nome);

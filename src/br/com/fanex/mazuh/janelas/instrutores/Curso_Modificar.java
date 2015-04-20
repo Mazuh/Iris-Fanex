@@ -402,7 +402,8 @@ public class Curso_Modificar extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "Curso criado com sucesso.");
                     
                 } catch(Exception e){
-                    msg += "\nCriação de curso falhou.";
+                    msg += "\nCriação de curso falhou.\nException:\n"
+                            + "Verifique se o nome é único e a conexão com bd está ok";
                 }
                 
             }else{
@@ -417,7 +418,8 @@ public class Curso_Modificar extends javax.swing.JFrame {
                     msg += "\nEdição de curso falhou."
                             + "\nEntidade de persistência não encontrada.";
                 } catch (Exception e) {
-                    msg += "\nEdição de curso falhou.";
+                    msg += "\nEdição de curso falhou.\n"
+                            + "Verifique se o nome é único e a conexão com bd está ok.";
                 }
                 
             }

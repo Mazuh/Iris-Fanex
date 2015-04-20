@@ -357,7 +357,8 @@ public class Usuario_Preferencias extends javax.swing.JFrame {
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         final String MSG_NORMAL = "Nenhuma alteração foi realizada.";
         final String MSG_ALTERACAO = "Alteração(ões) realizada(s):\n";
-        final String MSG_ERRO = "Erro ao tentar persistir alterações no banco de dados.";
+        final String MSG_ERRO = "Erro ao tentar persistir alterações no banco de dados.\n"
+                + "Verificar conexão e se o nome já não existe.";
         final String MSG_ERRO_SEGURANCA = "O campo obrigatório de senha atual está incorreto!";
         
         String msg = MSG_NORMAL;
