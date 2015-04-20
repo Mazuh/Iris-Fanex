@@ -118,11 +118,11 @@ public class Curso_Modificar extends javax.swing.JFrame {
         String gabarito = jGabarito.getText();
         if (gabarito.equals(""))
             msg += "\nURL do gabarito (clique no botão dúvida e leia-o até o fim!)";
-        if (gabarito.length() > 200 || gabarito.length() < 10)
+        if (gabarito.equals("null") && (gabarito.length() > 200 || gabarito.length() < 10))
             msg += "\nQuantidade de caractéres do URL do gabarito (mínimo: 10, máximo: 200)";
         
         // gabarito alternativo, não precisa de validação.
-        String gabaritoAlt = jGabarito.getText();
+        String gabaritoAlt = jGabaritoAlt.getText();
         if (gabaritoAlt.length() > 200)
             msg += "\nQuantidade de caractéres do URL do gabarito alternativo (sem mínimo, máximo: 200)";
         
