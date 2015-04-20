@@ -81,6 +81,10 @@ public class Cursos_CRUD extends javax.swing.JFrame {
         
     }
     
+    /*
+    Faz uma pesquisa na lista de cursos baseado na página atual e
+    preenche a tabela.
+    */
     private void preencherTbDeCursos(){
         // índice para saber qual a primeira posição do bd a ser consultado
         // é definido baseado na página atual da tabela
@@ -171,7 +175,7 @@ public class Cursos_CRUD extends javax.swing.JFrame {
         btnProx = new javax.swing.JButton();
         jPagina = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -234,9 +238,19 @@ public class Cursos_CRUD extends javax.swing.JFrame {
 
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/mais.gif"))); // NOI18N
         btnAdd.setText("Adicionar novo curso");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
 
         btnBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/janela.gif"))); // NOI18N
         btnBack.setText("Voltar ao paInel");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         jLabel2.setBackground(new java.awt.Color(39, 174, 96));
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -317,6 +331,9 @@ public class Cursos_CRUD extends javax.swing.JFrame {
         atualizar();
     }//GEN-LAST:event_formWindowGainedFocus
 
+    /*
+    Vai para a página anterior, se for possível.
+    */
     private void btnAntActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAntActionPerformed
                 // encontra página
         String[] paginacao = jPagina.getText().split("/"); // var auxiliar para split 
@@ -332,6 +349,9 @@ public class Cursos_CRUD extends javax.swing.JFrame {
         preencherTbDeCursos();
     }//GEN-LAST:event_btnAntActionPerformed
 
+    /*
+    Vai para a página seguinte, se possível.
+    */
     private void btnProxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProxActionPerformed
         // encontra página e limite de páginas 
         String[] paginacao = jPagina.getText().split("/"); // var auxiliar para split 
@@ -347,6 +367,21 @@ public class Cursos_CRUD extends javax.swing.JFrame {
         
         preencherTbDeCursos();
     }//GEN-LAST:event_btnProxActionPerformed
+
+    /*
+    Cria um curso vazio e manda para a janela configuradora de cursos.
+    */
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        Curso cursoVazio = new Curso();
+        new Curso_Modificar(cursoVazio).setVisible(true);
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    /*
+    Fecha o form.
+    */
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnBackActionPerformed
 
     /**
      * @param args the command line arguments

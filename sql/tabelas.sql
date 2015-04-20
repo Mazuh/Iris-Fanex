@@ -35,4 +35,10 @@ CREATE TABLE exercicios(
 	is_corrigido SMALLINT NOT NULL DEFAULT 0
 );
 
+-- modificações pós-produção.
+
 DROP SEQUENCE usuarios_id_seq CASCADE;
+
+ALTER TABLE cursos
+	ALTER COLUMN url_gabarito TYPE varchar(200),
+	ALTER COLUMN url_gabarito_alt TYPE varchar(200);

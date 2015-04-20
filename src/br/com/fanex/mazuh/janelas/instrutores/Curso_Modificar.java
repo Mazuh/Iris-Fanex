@@ -23,6 +23,12 @@
  */
 package br.com.fanex.mazuh.janelas.instrutores;
 
+import br.com.fanex.mazuh.acesso.Sessao;
+import br.com.fanex.mazuh.edu.Curso;
+import br.com.fanex.mazuh.jpa.CursoJpaController;
+import br.com.fanex.mazuh.jpa.exceptions.NonexistentEntityException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -31,15 +37,120 @@ import javax.swing.JOptionPane;
  */
 public class Curso_Modificar extends javax.swing.JFrame {
 
+    private static Curso curso;
+    private final CursoJpaController cursoDAO;
+    
     /**
      * Creates new form Curso_Modificar
+     * @param curso
      */
-    public Curso_Modificar() {
+    public Curso_Modificar(Curso curso) {
+        // vars
+        Curso_Modificar.curso = curso;
+        this.cursoDAO = new CursoJpaController(Sessao.getEntityManagerFactory());
+        
+        // config de janela
         initComponents();
         
         this.setTitle("Configurando Curso");
         this.setResizable(false);
         this.setLocationRelativeTo(null);
+        
+        // preenche valores, caso o curso já tenha um id.
+        if (curso.getId() != null){
+            jID.setText(String.valueOf(curso.getId() < 0 ? "" : curso.getId()));
+            jNome.setText(curso.getNome());
+            jQtdAulas.setValue(curso.getQtdExercicios());
+            jGabarito.setText(curso.getUrlGabarito());
+            if (curso.getUrlGabaritoAlt() != null)
+               jGabaritoAlt.setText(curso.getUrlGabaritoAlt());
+        } // else: criando curso novo. 
+        
+    }
+    
+    /*
+    Configura o objeto lógico do curso baseado nos campos do form.
+    
+    Se todos os valores foram validados corretamente, retorna true.
+    Se não, retorna false e exibe uma mensagem de erro informando quais campos
+    devem ser corrigidos.
+    */
+    private boolean configurarObjLocalCursoValido() {
+        // preparação de vars para erros.
+        final String MSG_PADRAO = "Checar seguintes campos inválidos:";
+        String msg = MSG_PADRAO;
+        
+        // validação de campos
+        
+        // id
+        int id;
+        try{
+            id = Integer.valueOf(jID.getText());
+        }catch(NumberFormatException e){ // impossível converter "" pra int
+            id = -1;
+            // id não precisa de validação, é tudo feito automaticamente pelo postgres
+        }
+        
+        // nome
+        String nome = jNome.getText();
+        if (nome.equals(""))
+            msg += "\nNome do curso";
+        if (nome.length() > 50 || nome.length() < 3)
+            msg += "\nQuantidade de caractéres do nome (mínimo: 3, máximo: 50)";
+        
+        // qtd de aulas
+        int qtdAulas;
+        try{
+            qtdAulas = (Integer) jQtdAulas.getValue();
+            
+            if (qtdAulas < 1)
+                msg += "\nQuantidade de aulas (mínimo: 1)";
+            else if (qtdAulas > 100)
+                msg += "\nQuantidade de aulas (máximo: 100)";
+            
+        } catch(Exception e){
+            qtdAulas = 0;
+            msg += "\nQuantidade de aulas";
+        }
+        
+                
+        // gabarito principal ('NOT NULL' no banco de dados mas permite string "null")
+        String gabarito = jGabarito.getText();
+        if (gabarito.equals(""))
+            msg += "\nURL do gabarito (clique no botão dúvida e leia-o até o fim!)";
+        if (gabarito.length() > 200 || gabarito.length() < 10)
+            msg += "\nQuantidade de caractéres do URL do gabarito (mínimo: 10, máximo: 200)";
+        
+        // gabarito alternativo, não precisa de validação.
+        String gabaritoAlt = jGabarito.getText();
+        if (gabaritoAlt.length() > 200)
+            msg += "\nQuantidade de caractéres do URL do gabarito alternativo (sem mínimo, máximo: 200)";
+        
+        // define o que vai ser retornado.
+        if (msg.equals(MSG_PADRAO)){ // não precisa exibir nada, deu certo.
+            setters(id, nome, qtdAulas, gabarito, gabaritoAlt);
+            return true;
+            
+        }else{
+            // exiba a msg como erro.
+            JOptionPane.showMessageDialog(null,
+                    msg,
+                    "'Easy, partner...'",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        
+    }
+    
+    /*
+    Seta todos os atributos do objeto local Curso.
+    */
+    private void setters(int id, String nome, int qtdAulas, String gabarito, String gabaritoAlt){
+        curso.setId(id);
+        curso.setNome(nome);
+        curso.setQtdExercicios(qtdAulas);
+        curso.setUrlGabarito(gabarito);
+        curso.setUrlGabaritoAlt(gabaritoAlt);
     }
 
     /**
@@ -70,7 +181,7 @@ public class Curso_Modificar extends javax.swing.JFrame {
         jGabaritoAlt = new javax.swing.JTextField();
         btnExplicarLinkGabarito = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
@@ -114,6 +225,11 @@ public class Curso_Modificar extends javax.swing.JFrame {
         jLabel0.setText("URL alternativo (opcional, deixe em branco se não tiver):");
 
         btnSalvar.setText("Salvar");
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarActionPerformed(evt);
+            }
+        });
 
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
@@ -266,6 +382,55 @@ public class Curso_Modificar extends javax.swing.JFrame {
                 JOptionPane.QUESTION_MESSAGE);
     }//GEN-LAST:event_btnExplicarLinkGabaritoActionPerformed
 
+    /*
+    Tenta configurar o objeto local baseado nos campos jcomponents.
+    Se tiver dado tudo certo, ocorre uma tentativa de persistência.
+    
+    Qualquer erro e caixas de diálogo serão exibidas ao usuário.
+    */
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        if (configurarObjLocalCursoValido()){ // validação na tentativa de config. deu true?
+            
+            String msg = ""; // var para armazenar possíveis erros com o DAO
+            
+            if (curso.getId() == null || curso.getId() < 0){
+                // curso novo, criar!
+                try{
+                    
+                    cursoDAO.create(curso);
+                    this.dispose();
+                    JOptionPane.showMessageDialog(null, "Curso criado com sucesso.");
+                    
+                } catch(Exception e){
+                    msg += "\nCriação de curso falhou.";
+                }
+                
+            }else{
+                // curso já existente, editar!
+                try {
+                    
+                    cursoDAO.edit(curso);
+                    this.dispose();
+                    JOptionPane.showMessageDialog(null, "Curso modificado com sucesso.");
+                    
+                } catch (NonexistentEntityException e) {
+                    msg += "\nEdição de curso falhou."
+                            + "\nEntidade de persistência não encontrada.";
+                } catch (Exception e) {
+                    msg += "\nEdição de curso falhou.";
+                }
+                
+            }
+            
+            // se tiver algum erro a ser exibido, que seja exibido.
+            if (!msg.equals("")){
+                JOptionPane.showMessageDialog(null, msg, "ERRO", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        } // se a validação deu errado, ela própria irá emitir seus erros, este evento não fará mais nada
+        
+    }//GEN-LAST:event_btnSalvarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -296,7 +461,7 @@ public class Curso_Modificar extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Curso_Modificar().setVisible(true);
+                new Curso_Modificar(curso).setVisible(true);
             }
         });
     }
