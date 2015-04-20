@@ -575,10 +575,10 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
     */
     private void btnAddInstrutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddInstrutorActionPerformed
         JOptionPane.showMessageDialog(null, "ATENÇÃO, ADMINISTRADOR!\n\n"
-                + "Se você estiver TROCANDO de instrutores, NÃO crie um novo."
-                + "\nCancele isto."
-                + "\nApenas troque o nome e senha do instrutor antigo!"
-                + "\n\nIsso evita poluição do banco de dados, evitando que\n"
+                + "Se você estiver TROCANDO de instrutores,\n"
+                + "cancele isto e NÃO crie um novo."
+                + "\n\nApenas troque o nome e senha do instrutor antigo!"
+                + "\n\nIsso evita poluição do banco de dados, ou seja, que\n"
                 + "haja um monte de instrutores fantasmas para os alunos."
                 + "\nEm caso de dúvida, contate o desenvolvedor!");
         
@@ -616,7 +616,7 @@ public class Usuarios_VerTodos extends javax.swing.JFrame {
 
                 JOptionPane.showMessageDialog(null,
                         "USUÁRIO CRIADO"
-                        + "\nID: " + id + " (código de instrutores são diferenciados)"
+                        + "\nID: " + id + " (código de instrutores são sempre 'diferenciados')"
                         + "\nNome: Fessôr"
                         + "\nSenha: risos"
                         + "\nCargo: " + cargoInstrutor.getNome().toUpperCase()

@@ -361,7 +361,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
             }
         });
 
-        btnCursos.setText("Cursos");
+        btnCursos.setText("Gerenciar cursos");
         btnCursos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCursosActionPerformed(evt);
@@ -708,9 +708,11 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btnExerciciosActionPerformed
 
+    /*
+    Abre o painel CRUD de cursos.
+    */
     private void btnCursosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCursosActionPerformed
-        new Cursos_CRUD().setVisible(true);
-        
+        new Cursos_CRUD().setVisible(true);    
     }//GEN-LAST:event_btnCursosActionPerformed
 
     /**
