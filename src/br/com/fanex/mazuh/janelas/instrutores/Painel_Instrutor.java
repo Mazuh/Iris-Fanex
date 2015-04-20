@@ -43,7 +43,7 @@ import javax.swing.JOptionPane;
 public class Painel_Instrutor extends javax.swing.JFrame {
     
     // lista de exercícios a preencher a tabela
-    private List<Exercicio> exerciciosPendentes;
+    private List<Exercicio> exerciciosPendentes = null;
     
     // limitando matriz (tabela)
     private final int TB_ROWS_N = 15; // número de linhas
@@ -53,7 +53,6 @@ public class Painel_Instrutor extends javax.swing.JFrame {
      * Creates new form Painel_Instrutor
      */
     public Painel_Instrutor() {
-        exerciciosPendentes = getExerciciosNaoCorrigidos();
         
         initComponents();
         
@@ -83,6 +82,17 @@ public class Painel_Instrutor extends javax.swing.JFrame {
         preencherTbDeExercicios();
         
         jUltimoAtualizar.setText(":: Atualizado por último às " + getHorario() + ".");
+    }
+    
+    /*
+    Apagar todas as linhas da tabela
+    */
+    private void apagarTabela(){
+        for (int row = 0; row < TB_ROWS_N; row++){
+            for (int col = 0; col < TB_COLS_N; col++){
+                tbExercicios.setValueAt(null, row, col);
+            }
+        }
     }
     
     /*
@@ -120,6 +130,7 @@ public class Painel_Instrutor extends javax.swing.JFrame {
     e também de acordo com a página atual.
     */
     private void preencherTbDeExercicios(){
+        apagarTabela();
         
         // índice para saber qual a primeira posição da lista a ser acessada
         // definindo primeiro valor do índice baseado na página atual da tabela
