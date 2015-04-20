@@ -27,6 +27,7 @@ import br.com.fanex.mazuh.acesso.Sessao;
 import br.com.fanex.mazuh.edu.Curso;
 import br.com.fanex.mazuh.jpa.CursoJpaController;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -232,6 +233,11 @@ public class Cursos_CRUD extends javax.swing.JFrame {
 
         btnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/lapis.gif"))); // NOI18N
         btnEdit.setText("Modificar");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
 
         btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/lixo.gif"))); // NOI18N
         btnDelete.setText("Deletar");
@@ -382,6 +388,42 @@ public class Cursos_CRUD extends javax.swing.JFrame {
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
+
+    /*
+    Cria um objeto Curso baseado na seleção da tabela e envia ao
+    form configurador de cursos.
+    */
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        int linhaSelecionada = tbCursos.getSelectedRow();
+        
+        if (linhaSelecionada < 0){
+            
+            // nada selecionado
+            JOptionPane.showMessageDialog(null, "Selecione um curso na tabela!",
+                    "Ops...",
+                    JOptionPane.PLAIN_MESSAGE);
+            
+        } else{
+            
+            // ok, pega o id do curso na coluna 0 (a primeira)
+            int id = Integer.valueOf((String) tbCursos.getValueAt(linhaSelecionada, 0));
+            // busca o id
+            try {
+                Curso cursoSelecionado = new CursoJpaController(Sessao.getEntityManagerFactory())
+                        .findCurso(id);
+                // joga pro form responsável (NO DIA EM QUE SAÍ DE CASA... MINHA MÃE ME DISSE... Ok, parei.)
+                new Curso_Modificar(cursoSelecionado).setVisible(true);
+            } catch (Exception e) {
+
+                JOptionPane.showMessageDialog(null, "OPA! Ocorreu algum erro esquisito!\n\n"
+                        + e.getMessage(),
+                        "ERRO",
+                        JOptionPane.PLAIN_MESSAGE);
+
+            }
+        }
+        
+    }//GEN-LAST:event_btnEditActionPerformed
 
     /**
      * @param args the command line arguments
