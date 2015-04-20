@@ -241,6 +241,11 @@ public class Cursos_CRUD extends javax.swing.JFrame {
 
         btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/lixo.gif"))); // NOI18N
         btnDelete.setText("Deletar");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/mais.gif"))); // NOI18N
         btnAdd.setText("Adicionar novo curso");
@@ -418,12 +423,59 @@ public class Cursos_CRUD extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "OPA! Ocorreu algum erro esquisito!\n\n"
                         + e.getMessage(),
                         "ERRO",
-                        JOptionPane.PLAIN_MESSAGE);
+                        JOptionPane.ERROR_MESSAGE);
 
             }
         }
         
     }//GEN-LAST:event_btnEditActionPerformed
+
+    /*
+    Deleta o curso da linha selecionada na tabela.
+    */
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        int linhaSelecionada = tbCursos.getSelectedRow();
+        
+        if (linhaSelecionada < 0){
+            
+            // nada selecionado
+            JOptionPane.showMessageDialog(null, "Selecione um curso na tabela!",
+                    "Ops...",
+                    JOptionPane.PLAIN_MESSAGE);
+            
+        } else{
+            
+            // ok, pega o id do curso na coluna 0 (a primeira) e o nome na 1 (segunda)
+            int id = Integer.valueOf((String) tbCursos.getValueAt(linhaSelecionada, 0));
+            String nome = (String) tbCursos.getValueAt(linhaSelecionada, 1);
+            
+            // busca o id
+            try {
+                
+                int resposta = JOptionPane.showConfirmDialog(null, 
+                        "Você tem certeza que deseja deletar o curso (ID: " + id + ") '" + nome + "'?");
+                
+                if (resposta == JOptionPane.OK_OPTION) {
+                    
+                    // cria um DAO e usa pra destruir o id tal.
+                    new CursoJpaController(Sessao.getEntityManagerFactory())
+                            .destroy(id);
+                    
+                    // não lançou exception, então exiba confirmação
+                    JOptionPane.showMessageDialog(null, "Curso " + nome + " deletado.");
+                    
+                } // else faça nada
+                
+            } catch (Exception e) {
+
+                JOptionPane.showMessageDialog(null, "OPA! Ocorreu algum erro esquisito!\n\n"
+                        + e.getMessage(),
+                        "ERRO",
+                        JOptionPane.ERROR_MESSAGE);
+
+            }
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     /**
      * @param args the command line arguments
