@@ -26,6 +26,7 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jGabarito" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -42,6 +43,7 @@
                           </Group>
                       </Group>
                   </Group>
+                  <Component id="jGabaritoAlt" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -52,16 +54,12 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jQtdAulas" min="-2" pref="58" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="btnGabarito" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-                              <Component id="jGabarito" min="-2" max="-2" attributes="0"/>
-                          </Group>
                           <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel0" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="btnGabaritoAlt" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-                              <Component id="jGabaritoAlt" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="btnExplicarLinkGabarito" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -106,15 +104,16 @@
               <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="btnGabarito" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jGabarito" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnExplicarLinkGabarito" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
+              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+              <Component id="jGabarito" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="btnGabaritoAlt" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jGabaritoAlt" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="jLabel0" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jGabaritoAlt" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnSalvar" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnCancelar" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -212,24 +211,14 @@
         <Property name="opaque" type="boolean" value="true"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jGabarito">
+    <Component class="javax.swing.JLabel" name="jLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Clique e selecione o .pdf do gabarito"/>
+        <Property name="text" type="java.lang.String" value="Cole aqui o link Google Docs para o .pdf do gabarito:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btnGabarito">
+    <Component class="javax.swing.JLabel" name="jLabel0">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Escolha"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="btnGabaritoAlt">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Escolha (opcional)"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="jGabaritoAlt">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Gabarito alternativo (opcional)"/>
+        <Property name="text" type="java.lang.String" value="URL alternativo (opcional, deixe em branco se n&#xe3;o tiver):"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="btnSalvar">
@@ -252,6 +241,18 @@
         </Property>
         <Property name="text" type="java.lang.String" value="(Curso novo? ID em branco! )"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="jGabarito">
+    </Component>
+    <Component class="javax.swing.JTextField" name="jGabaritoAlt">
+    </Component>
+    <Component class="javax.swing.JButton" name="btnExplicarLinkGabarito">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="?"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExplicarLinkGabaritoActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

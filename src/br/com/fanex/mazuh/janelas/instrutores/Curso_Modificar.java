@@ -36,6 +36,10 @@ public class Curso_Modificar extends javax.swing.JFrame {
      */
     public Curso_Modificar() {
         initComponents();
+        
+        this.setTitle("Configurando Curso");
+        this.setResizable(false);
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -57,13 +61,14 @@ public class Curso_Modificar extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jQtdAulas = new javax.swing.JSpinner();
         jLabel7 = new javax.swing.JLabel();
-        jGabarito = new javax.swing.JLabel();
-        btnGabarito = new javax.swing.JButton();
-        btnGabaritoAlt = new javax.swing.JButton();
-        jGabaritoAlt = new javax.swing.JLabel();
+        jLabel = new javax.swing.JLabel();
+        jLabel0 = new javax.swing.JLabel();
         btnSalvar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
+        jGabarito = new javax.swing.JTextField();
+        jGabaritoAlt = new javax.swing.JTextField();
+        btnExplicarLinkGabarito = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -104,13 +109,9 @@ public class Curso_Modificar extends javax.swing.JFrame {
         jLabel7.setText("GABARITOS:");
         jLabel7.setOpaque(true);
 
-        jGabarito.setText("Clique e selecione o .pdf do gabarito");
+        jLabel.setText("Cole aqui o link Google Docs para o .pdf do gabarito:");
 
-        btnGabarito.setText("Escolha");
-
-        btnGabaritoAlt.setText("Escolha (opcional)");
-
-        jGabaritoAlt.setText("Gabarito alternativo (opcional)");
+        jLabel0.setText("URL alternativo (opcional, deixe em branco se não tiver):");
 
         btnSalvar.setText("Salvar");
 
@@ -124,6 +125,13 @@ public class Curso_Modificar extends javax.swing.JFrame {
         jLabel10.setForeground(new java.awt.Color(153, 153, 153));
         jLabel10.setText("(Curso novo? ID em branco! )");
 
+        btnExplicarLinkGabarito.setText("?");
+        btnExplicarLinkGabarito.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExplicarLinkGabaritoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -131,6 +139,7 @@ public class Curso_Modificar extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jGabarito)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
@@ -143,6 +152,7 @@ public class Curso_Modificar extends javax.swing.JFrame {
                                 .addGap(2, 2, 2)
                                 .addComponent(jLabel10)
                                 .addGap(0, 0, Short.MAX_VALUE))))
+                    .addComponent(jGabaritoAlt)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
@@ -152,15 +162,12 @@ public class Curso_Modificar extends javax.swing.JFrame {
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jQtdAulas, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnGabarito)
-                                .addGap(4, 4, 4)
-                                .addComponent(jGabarito))
                             .addComponent(jLabel7)
+                            .addComponent(jLabel0)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnGabaritoAlt)
-                                .addGap(4, 4, 4)
-                                .addComponent(jGabaritoAlt)))
+                                .addComponent(jLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnExplicarLinkGabarito)))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -195,13 +202,15 @@ public class Curso_Modificar extends javax.swing.JFrame {
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnGabarito)
-                    .addComponent(jGabarito))
+                    .addComponent(jLabel)
+                    .addComponent(btnExplicarLinkGabarito))
+                .addGap(4, 4, 4)
+                .addComponent(jGabarito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnGabaritoAlt)
-                    .addComponent(jGabaritoAlt))
-                .addGap(18, 18, 18)
+                .addComponent(jLabel0)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jGabaritoAlt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSalvar)
                     .addComponent(btnCancelar))
@@ -220,6 +229,42 @@ public class Curso_Modificar extends javax.swing.JFrame {
                 "CANCELADO", JOptionPane.PLAIN_MESSAGE);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
+
+    /*
+    Abre uma caixa de diálogo explicando sobre o que colocar no campo de gabarito.
+    */
+    private void btnExplicarLinkGabaritoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExplicarLinkGabaritoActionPerformed
+        JOptionPane.showMessageDialog(null,
+                "Link Google Docs para .pdf do gabarito.\n"
+                        + "Não sabe o que isso quer dizer?\n"
+                        + "Permita-me explicar de forma superficial.\n"
+                        + "\n"
+                        + "- Use uma conta Google (a mesma do Gmail) para\n"
+                        + "acessar o serviço Docs (ou Google Documentos).\n"
+                        + "- Faça o upload do gabarito e abra-o usando o Docs.\n"
+                        + "- Use o menu superior para compartilhar o arquivo.\n"
+                        + "- Na caixa de diálogo que surgir, clique em \"receber\n"
+                        + "link compartilhável\" e um link irá surgir pra\n"
+                        + "você copiar e colá-lo aqui no sistema Íris.\n"
+                        + "- Conclua o processo do Docs.\n"
+                        + "\n"
+                        + "É recomendável que você faça o teste do link colando-o\n"
+                        + "na barra de url do seu navegador de Internet.\n"
+                        + "\n"
+                        + "O processo é simples e não demora nem 5min, mas em caso\n"
+                        + "de dúvidas não se acanhe e peça ajuda ao desenvolvedor\n"
+                        + "do Íris. As informações para contato estão nas\n"
+                        + "configurações do seu painel de Instrutor ou Administrador.\n"
+                        + "\n"
+                        + "Caso precise emergencialmente criar este curso, digite\n"
+                        + "a palavra \"null\" (sem aspas) no campo de gabarito\n"
+                        + "que o curso será criado sem problemas.\n"
+                        + "Infelizmente, fazendo isso você não poderá abrir o\n"
+                        + "gabarito rapidamente quando for corrigir os exercícios\n"
+                        + "de seus alunos.",
+                "Link do Google Docs? Hã?",
+                JOptionPane.QUESTION_MESSAGE);
+    }//GEN-LAST:event_btnExplicarLinkGabaritoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -258,12 +303,13 @@ public class Curso_Modificar extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
-    private javax.swing.JButton btnGabarito;
-    private javax.swing.JButton btnGabaritoAlt;
+    private javax.swing.JButton btnExplicarLinkGabarito;
     private javax.swing.JButton btnSalvar;
-    private javax.swing.JLabel jGabarito;
-    private javax.swing.JLabel jGabaritoAlt;
+    private javax.swing.JTextField jGabarito;
+    private javax.swing.JTextField jGabaritoAlt;
     private javax.swing.JTextField jID;
+    private javax.swing.JLabel jLabel;
+    private javax.swing.JLabel jLabel0;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
