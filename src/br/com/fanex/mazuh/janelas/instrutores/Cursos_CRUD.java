@@ -455,7 +455,7 @@ public class Cursos_CRUD extends javax.swing.JFrame {
                 int resposta = JOptionPane.showConfirmDialog(null, 
                         "Você tem certeza que deseja deletar o curso (ID: " + id + ") '" + nome + "'?");
                 
-                if (resposta == JOptionPane.OK_OPTION) {
+                if (resposta == JOptionPane.YES_OPTION) {
                     
                     // cria um DAO e usa pra destruir o id tal.
                     new CursoJpaController(Sessao.getEntityManagerFactory())

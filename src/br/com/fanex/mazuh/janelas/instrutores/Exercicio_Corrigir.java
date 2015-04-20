@@ -23,23 +23,95 @@
  */
 package br.com.fanex.mazuh.janelas.instrutores;
 
+import br.com.fanex.mazuh.acesso.Sessao;
+import br.com.fanex.mazuh.edu.Exercicio;
+import br.com.fanex.mazuh.jpa.ExercicioJpaController;
+import java.awt.Desktop;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author mazuh
  */
 public class Exercicio_Corrigir extends javax.swing.JFrame {
 
+    private static Exercicio exercicio;
+    
     /**
      * Creates new form Exercicio_Corrigir
+     * @param exercicio
      */
-    public Exercicio_Corrigir() {
+    public Exercicio_Corrigir(Exercicio exercicio) {
+        Exercicio_Corrigir.exercicio = exercicio;
+        
+        // configura form
         initComponents();
         
-        this.setTitle("[CORREÇÃO]");
+        this.setTitle("[CORREÇÃO] " + exercicio.toString());
         this.setResizable(false);
         this.setLocationRelativeTo(null);
+        
+        // setters nos JLabel
+        jExercicio.setText("(ID " + exercicio.getId() + ") " + exercicio.toString());
+        jAluno.setText(exercicio.getIdAluno().toString());
+        
+        txtRespostas.setText(exercicio.getRespostas());
+    }
+    
+    /*
+    Insere uma lista vazia numerada. A quantidade de itens irá variar de acordo
+    com o digitado no jspinner.
+    Depois o focus é requisitado ao textarea de correção.
+    Se o valor do jspinner for menor que 0, ele será 0.
+    */
+    private void inserirNumeracao(){
+        int numeracao = (Integer) jNumeracao.getValue();
+        
+        if (numeracao > 0){
+            
+            for (int i = 1; i <= numeracao; i++)
+                txtCorrecao.setText(txtCorrecao.getText() + "\n" + i + " - ");
+            txtCorrecao.requestFocus();
+            
+        } else{
+            jNumeracao.setValue(0);
+        }
+        
     }
 
+    /*
+    Abre o url usando o navegador padrão.
+    Emite caixas de diálogo de erro caso lance exceptions.
+    ps: as mensagens estão configuradas para considerar que o link é de um gabarito.
+    */
+    private void abrirLink(String url){
+        Desktop desktop = Desktop.getDesktop();
+        
+        try {
+            
+            desktop.browse(new URI(url)); // abre o browser no link
+            
+            
+        } catch (IOException | URISyntaxException ioe) {
+            JOptionPane.showMessageDialog(null, 
+                    "O URL do gabarito não está configurado corretamente.\n"
+                            + "Gerencie este curso e cheque as configurações.", 
+                    "ERRO GABARITO", 
+                    JOptionPane.PLAIN_MESSAGE);
+            
+        } catch(Exception e){
+            JOptionPane.showMessageDialog(null, 
+                    "Algo errado na tentativa de abrir o gabarito.", 
+                    "ERRO GABARITO", 
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -53,19 +125,27 @@ public class Exercicio_Corrigir extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        textArea1 = new java.awt.TextArea();
+        txtRespostas = new java.awt.TextArea();
         jLabel5 = new javax.swing.JLabel();
-        textArea2 = new java.awt.TextArea();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        txtCorrecao = new java.awt.TextArea();
+        btnTerminar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
+        jNumeracao = new javax.swing.JSpinner();
+        btnInserirNumeracao = new javax.swing.JButton();
+        btnGabarito = new javax.swing.JButton();
+        jAluno = new javax.swing.JLabel();
+        jExercicio = new javax.swing.JLabel();
+        btnGabaritoAlt = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+            }
+        });
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
@@ -91,7 +171,7 @@ public class Exercicio_Corrigir extends javax.swing.JFrame {
         jLabel4.setText("RESPOSTAS ESCRITAS PELO(A) ALUNO(A):");
         jLabel4.setOpaque(true);
 
-        textArea1.setEditable(false);
+        txtRespostas.setEditable(false);
 
         jLabel5.setBackground(new java.awt.Color(22, 160, 133));
         jLabel5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -99,22 +179,55 @@ public class Exercicio_Corrigir extends javax.swing.JFrame {
         jLabel5.setText("CORREÇÃO DO(A) INSTRUTOR(A):");
         jLabel5.setOpaque(true);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/salvar.gif"))); // NOI18N
-        jButton1.setText("Terminei de corrigir!");
+        btnTerminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/salvar.gif"))); // NOI18N
+        btnTerminar.setText("Terminei de corrigir!");
+        btnTerminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTerminarActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Cancelar");
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("Inserir numeração:");
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/escrever.gif"))); // NOI18N
-        jButton3.setText("Inserir");
+        jNumeracao.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jNumeracaoKeyPressed(evt);
+            }
+        });
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/transferencia.gif"))); // NOI18N
-        jButton4.setText("Ver gabarito do curso");
+        btnInserirNumeracao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/escrever.gif"))); // NOI18N
+        btnInserirNumeracao.setText("Inserir");
+        btnInserirNumeracao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInserirNumeracaoActionPerformed(evt);
+            }
+        });
 
-        jLabel7.setText("null");
+        btnGabarito.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/fanex/mazuh/janelas/imgs/icon/transferencia.gif"))); // NOI18N
+        btnGabarito.setText("Ver gabarito do curso");
+        btnGabarito.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGabaritoActionPerformed(evt);
+            }
+        });
 
-        jLabel8.setText("null");
+        jAluno.setText("null");
+
+        jExercicio.setText("null");
+
+        btnGabaritoAlt.setText("Alternativo");
+        btnGabaritoAlt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGabaritoAltActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -123,36 +236,38 @@ public class Exercicio_Corrigir extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(textArea1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(textArea2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtRespostas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtCorrecao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel6)
                         .addGap(3, 3, 3)
-                        .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jNumeracao, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton4))
+                        .addComponent(btnInserirNumeracao))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
-                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCancelar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
+                        .addComponent(btnTerminar))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel7))
+                                .addComponent(jAluno))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel8)))
+                                .addComponent(jExercicio))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnGabarito)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnGabaritoAlt)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -162,35 +277,122 @@ public class Exercicio_Corrigir extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(btnTerminar)
+                    .addComponent(btnCancelar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel7))
+                    .addComponent(jAluno))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jLabel8))
+                    .addComponent(jExercicio))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jButton4))
+                    .addComponent(btnGabarito)
+                    .addComponent(btnGabaritoAlt))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(textArea1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtRespostas, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jLabel6)
-                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3))
+                    .addComponent(jNumeracao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnInserirNumeracao))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(textArea2, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtCorrecao, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    /*
+    Com a devida confirmação do usuário, fecha a janela.
+    */
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        int resposta = JOptionPane.showConfirmDialog(null,
+                "Deseja mesmo cancelar esta correção?\n"
+                        + "Se você tiver digitado algo, será perdido.");
+        
+        if (resposta == JOptionPane.YES_OPTION)
+            this.dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    /*
+    Abre o link do gabarito pelo navegador padrão.
+    */
+    private void btnGabaritoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGabaritoActionPerformed
+        abrirLink(exercicio.getIdCurso().getUrlGabarito());
+    }//GEN-LAST:event_btnGabaritoActionPerformed
+
+    /*
+    Insere uma lista vazia numerada. A quantidade de itens irá variar de acordo
+    com o digitado no jspinner.
+    */
+    private void btnInserirNumeracaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirNumeracaoActionPerformed
+        inserirNumeracao();
+    }//GEN-LAST:event_btnInserirNumeracaoActionPerformed
+
+    /*
+    Se a tecla tab ou enter for pressionada enquanto o jspinner estiver focado,
+    a numeração é inserida.
+    */
+    private void jNumeracaoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jNumeracaoKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER
+                || evt.getKeyCode() == KeyEvent.VK_TAB){
+            inserirNumeracao();
+        }
+    }//GEN-LAST:event_jNumeracaoKeyPressed
+
+    /*
+    Quando a tela entrar em foco, o foco irá mudar para o jspinner de numeração.
+    */
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        jNumeracao.requestFocus();
+    }//GEN-LAST:event_formWindowGainedFocus
+
+    /*
+    Abre o link do gabarito alternativo usando o navegador padrão.
+    */
+    private void btnGabaritoAltActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGabaritoAltActionPerformed
+        abrirLink(exercicio.getIdCurso().getUrlGabarito());
+    }//GEN-LAST:event_btnGabaritoAltActionPerformed
+
+    /*
+    Caso o usuário confirme, configura objeto local e envia para a 
+    persistência via DAO.
+    */
+    private void btnTerminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTerminarActionPerformed
+        int resposta = JOptionPane.showConfirmDialog(null,
+                "Tem certeza que deseja enviar esta correção?");
+        
+        if (resposta == JOptionPane.YES_OPTION) {
+            
+            // inicia processo de configuração de objeto local
+            exercicio.setCorrecao(txtCorrecao.getText());
+            exercicio.setQtdPerguntas((Integer) jNumeracao.getValue());
+            exercicio.setIsCorrigido((short) 1);
+
+            try {
+
+                // persistência do obj local por DAO
+                new ExercicioJpaController(Sessao.getEntityManagerFactory()).edit(exercicio);
+                // msg de confirmação e fecha janela caso nenhuma exception tenha sido lançada
+                JOptionPane.showMessageDialog(null, "Exercício corrigido com sucesso.");
+                this.dispose();
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null,
+                        "Erro ao tentar salvar no banco de dados.",
+                        "ERRO",
+                        JOptionPane.ERROR_MESSAGE);
+
+            }
+            
+        } // else faça nada
+    }//GEN-LAST:event_btnTerminarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -222,26 +424,27 @@ public class Exercicio_Corrigir extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Exercicio_Corrigir().setVisible(true);
+                new Exercicio_Corrigir(exercicio).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnGabarito;
+    private javax.swing.JButton btnGabaritoAlt;
+    private javax.swing.JButton btnInserirNumeracao;
+    private javax.swing.JButton btnTerminar;
+    private javax.swing.JLabel jAluno;
+    private javax.swing.JLabel jExercicio;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JSpinner jSpinner1;
-    private java.awt.TextArea textArea1;
-    private java.awt.TextArea textArea2;
+    private javax.swing.JSpinner jNumeracao;
+    private java.awt.TextArea txtCorrecao;
+    private java.awt.TextArea txtRespostas;
     // End of variables declaration//GEN-END:variables
 }

@@ -334,7 +334,7 @@ public class Exercicio_Responder extends javax.swing.JFrame {
                 "Tem certeza de que deseja enviar este exercício ao instrutor?\n"
                 + "Você não poderá modificá-lo depois!");
         
-        if (resposta == JOptionPane.OK_OPTION){
+        if (resposta == JOptionPane.YES_OPTION){
             enviarExercicio();
         }
         
