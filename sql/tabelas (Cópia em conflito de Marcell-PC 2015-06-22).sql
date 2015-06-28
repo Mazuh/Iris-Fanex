@@ -1,10 +1,10 @@
-create table hierarquias(
-	id INTEGER PRIMARY KEY,
+﻿CREATE TABLE hierarquias(
+	id SERIAL PRIMARY KEY,
 	nome VARCHAR(10) NOT NULL
 );
 
 CREATE TABLE usuarios(
-	id INTEGER PRIMARY KEY,
+	id SERIAL PRIMARY KEY,
 	id_hierarquia INTEGER NOT NULL
 		REFERENCES hierarquias(id),
 	nome VARCHAR(50) NOT NULL DEFAULT 'Aluno',
@@ -12,7 +12,7 @@ CREATE TABLE usuarios(
 );
 
 CREATE TABLE cursos(
-	id INTEGER PRIMARY KEY,
+	id SERIAL PRIMARY KEY,
 	nome VARCHAR(50) NOT NULL,
 	qtd_exercicios INTEGER NOT NULL,
 	url_gabarito VARCHAR(50) NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE cursos(
 );
 
 CREATE TABLE exercicios(
-	id INTEGER PRIMARY KEY,
+	id SERIAL PRIMARY KEY,
 	id_aluno INTEGER NOT NULL
 		REFERENCES usuarios(id),
 	id_curso INTEGER NOT NULL
@@ -36,6 +36,8 @@ CREATE TABLE exercicios(
 );
 
 -- modificações pós-produção.
+
+DROP SEQUENCE usuarios_id_seq CASCADE;
 
 ALTER TABLE cursos
 	ALTER COLUMN url_gabarito TYPE varchar(200),

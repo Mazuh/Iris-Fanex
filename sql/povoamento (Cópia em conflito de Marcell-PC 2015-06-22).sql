@@ -1,12 +1,15 @@
+﻿-- TABELA hierarquias ----------------------
+INSERT INTO hierarquias(nome) VALUES('admin');
+INSERT INTO hierarquias(nome) VALUES('instrutor');
+INSERT INTO hierarquias(nome) VALUES('aluno');
 
-INSERT INTO hierarquias(id, nome) VALUES(1, 'admin');
-INSERT INTO hierarquias(id, nome) VALUES(2, 'instrutor');
-INSERT INTO hierarquias(id, nome) VALUES(3, 'aluno');
 
-
+-- TABELA usuarios --------------------------
+-- administradores
 INSERT INTO usuarios(id, id_hierarquia, nome, senha)
 	VALUES(90001, 1, 'Ale', 'senhaultrasecreta');
 
+-- instrutores
 INSERT INTO usuarios(id, id_hierarquia, nome, senha)
 	VALUES(90002, 2, 'Luciana', 'pinguelo');
 	
