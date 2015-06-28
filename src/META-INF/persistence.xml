@@ -7,11 +7,13 @@
     <class>br.com.fanex.mazuh.edu.Curso</class>
     <class>br.com.fanex.mazuh.edu.Exercicio</class>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/db_iris"/>
+      
+      <!--<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/db_iris"/>-->
       <property name="javax.persistence.jdbc.password" value="echoecho"/>
       <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
       <property name="javax.persistence.jdbc.user" value="postgres"/>
       <property name="eclipselink.cache.shared.default" value="false"/>
+      
     </properties>
   </persistence-unit>
 </persistence>

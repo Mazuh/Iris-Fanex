@@ -26,8 +26,7 @@ package br.com.fanex.mazuh.janelas;
 import br.com.fanex.mazuh.acesso.Sessao;
 import br.com.fanex.mazuh.jpa.UsuarioJpaController;
 import java.awt.Color;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -47,43 +46,7 @@ public class SplashScreen extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(new Color(0, 0, 0));
     }
-
-    /*
-    Tenta se conectar pela primeira vez com o server. Essa rotina visa
-    amenizar a sensação de lentidão que o primeiro acesso dos frameworks geram.
-    */
-    private boolean fazerPrimeiroContatoComServer(){
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(SplashScreen.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        jMsg.setText("Tentando se conectar ao servidor. Aguarde...");
-        try {
-            
-            UsuarioJpaController foo = new UsuarioJpaController(Sessao.getEntityManagerFactory());
-            foo.findUsuario(600);
-            foo = null; // manda o objeto para o garbage collector
-                        // ps: acho que isso não é necessário em Java
-
-            jMsg.setText("Aguarde...");
-            return true;
-        
-        } catch (Exception e) {
-            try {
-                jMsg.setText("Falha ao tentar contato inicial com server!");
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                System.err.println("Interrupção na Thread de contato.");
-            } finally{
-                System.exit(1);
-                return false;
-            }
-        }
-        
-    }
-
+    
     /*
     Dispensa esta janela e abre a de login.
     */
@@ -165,11 +128,24 @@ public class SplashScreen extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     /*
-    Se o primeiro contato der certo, avança pra tela de login.
+    Sempre que a janela entra em foco, uma tentativa de resolver o IP do 
+    servidor é realizada. Se der sucesso, avança pra tela de login.
     */
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
-        if (fazerPrimeiroContatoComServer())
+        if (Sessao.resolveNovoIP()){
             avancar();
+        
+        } else{
+            
+            JOptionPane.showMessageDialog(null,
+                    "Incapaz de acessar banco de dados do server!\n"
+                    + "Reporte isso ao técnico do laboratório!",
+                    "ERRO",
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+            
+        }
+        
     }//GEN-LAST:event_formWindowGainedFocus
 
     /**
