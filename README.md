@@ -1,8 +1,8 @@
-# Projeto Iris Fanex
+# Sistema Iris Fanex
 <h3>(Licença: <a href="LICENSE">MIT License</a>)</h3>
 
-Projeto Iris: um sistema que organize as provas e atividades dos alunos da empresa onde fiz estágio.
-O objetivo de existência dele é o de servir ao propósito da descrição do repositório. A intenção de desenvolvimento foi a de aplicar meus conhecimentos aprendidos com Hibernate e JPA para resolver um problema dos usuários da empresa.
+Sistema Iris: um software que organiza as provas e atividades dos alunos da empresa de treinamentos (Fanex) onde fiz estágio.
+O objetivo de existência dele é o de servir ao propósito da descrição deste repositório. Uma segunda intenção deste desenvolvimento foi a de aplicar meus conhecimentos aprendidos com Hibernate e JPA no IFRN para resolver um problema dos usuários da empresa.
 
 Na Mitologia Grega, segundo a Wikipédia, Íris é "a personificação do arco-íris (...). Como o 
 arco-íris, para unir a Terra e o céu, Íris é a mensageira dos deuses para os seres humanos". 
