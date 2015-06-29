@@ -138,8 +138,9 @@ public class SplashScreen extends javax.swing.JFrame {
         } else{
             
             JOptionPane.showMessageDialog(null,
-                    "Incapaz de acessar banco de dados do server!\n"
-                    + "Reporte isso ao técnico do laboratório!",
+                    "Incapaz de chegar ao banco de dados do server!\n"
+                            + "Tentativa de resolver novo IP também falhou.\n"
+                            + "Reporte isso ao técnico do laboratório!",
                     "ERRO",
                     JOptionPane.ERROR_MESSAGE);
             System.exit(1);

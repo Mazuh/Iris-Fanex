@@ -211,47 +211,67 @@ public class Sessao {
     public static EntityManagerFactory getEntityManagerFactory() {
         //ip = PADRAO_IP;
         //porta = PADRAO_PORTA;
-
+        
         Map mapa = new HashMap();
         mapa.put("javax.persistence.jdbc.url",
-                "jdbc:postgresql://" + ip + ":" + PADRAO_PORTA + "/db_iris");
+                "jdbc:postgresql://" + ip + ":" + porta + "/db_iris");
         return Persistence.createEntityManagerFactory("Projeto_Iris__Fanex_PU", mapa);
     }
 
+    /*
+    Busca o arquivo 'iris-server-ip.conf' (cuja localização está no diretório
+    local './iris.conf') e encontra o IP do servidor. Caso dê falha, tenta
+    ir alterando o último octeto do IP encontrado de 0 a 255 até um dar certo.
+    
+    Caso conseguir resolver um IP que conecte, retorna true.
+    Se não encontrar o arquivo mas conseguir resolver por localhost,
+        retorna true e também emite uma janela de erro.
+    
+    Qualquer imprevisibilidade retorna false.
+    Impossibilidade de resolver o novo IP também retorna false.
+    
+    */
     public static boolean resolveNovoIP() {
+        if (Sessao.porta.equals(""))
+            Sessao.porta = Sessao.PADRAO_PORTA;
+        
         String ipEncontrado = descobrirIP();
 
         // verifica se tá vazio
         if (ipEncontrado.equals("")) {
-            erro("Arquivo 'iris.conf' pode estar vazio. O suporte deve ser chamado.\n"
-                    + "O IP do servidor do banco de dados por padrão é o localhost.");
+            erro("O caminho fornecido por 'iris.conf' pode estar errado ou vazio.\n\n"
+                    + "O IP do servidor do banco de dados por padrão é 'localhost'.\n"
+                    + "Após dar OK nesta caixa de diálogo, aguarde alguns segundos.\n\n");
             Sessao.ip = Sessao.PADRAO_IP;
-            
         } else{
             // se algum ip foi encontrado, verifica se o que foi encontrado funciona.
             Sessao.ip = ipEncontrado;
             
         }
-        System.out.println("Iniciando testes...");
+        
         if (Sessao.consegue_buscar_teste())
             return true;
         // else: prossegue a tentativa de resolver o novo ip
-        System.out.println("Passou no teste.");
+        
         // se tinha algo, tenta brincar com o ip em busca de um novo
         try {
-            String[] ip_quebrado = ipEncontrado.split(".");
+            
+            String[] ip_quebrado = ipEncontrado.split("\\."); // quebra por pontos
+            
             // acha três primeiros octetos do ip
             String ip_radical = ip_quebrado[0] + "." + ip_quebrado[1] + "." + ip_quebrado[2] + ".";
             
             // tenta busca o último octeto
             for (int i = 0; i <= 255; i++){
+                
+                // tenta com novo ip baseado no radical encontrado
                 Sessao.ip = ip_radical + i;
-                System.out.println(Sessao.ip);
+                
                 if (Sessao.consegue_buscar_teste()) // teste deu certo! uhu!
                     return true; // finaliza loop, achei o que queria
+                
             }
-            
-            
+        
         } catch(Exception e) { // provavelmente ip inválido: quebra deu exception
             return false;
         }
@@ -267,6 +287,8 @@ public class Sessao {
     public static boolean consegue_buscar_teste() {
         try {
             // testa
+            System.out.println("Tentativa para: " + Sessao.ip + ":" + Sessao.porta);
+            
             UsuarioJpaController foo = new UsuarioJpaController(Sessao.getEntityManagerFactory());
             foo.findUsuario(600);
             
@@ -279,7 +301,7 @@ public class Sessao {
         }
 
     }
-
+    
     /*
     Abre o arquivo iris.conf em busca do local do verdadeiro IP.
     Retorna string vazia em caso de erro.
